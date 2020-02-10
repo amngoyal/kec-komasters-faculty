@@ -1,0 +1,6 @@
+const KEY_ACCESS_TOKEN = 'act';
+const KEY_REFRESH_TOKEN = 'rft';
+const KEY_CURRENT_USER = 'user';
+const KEY_EXPIRATION_TIME = 'exp';
+
+module.exports = {KEY_ACCESS_TOKEN, KEY_CURRENT_USER, KEY_REFRESH_TOKEN,KEY_EXPIRATION_TIME};
