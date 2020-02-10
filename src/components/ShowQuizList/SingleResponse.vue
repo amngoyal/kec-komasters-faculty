@@ -16,18 +16,30 @@
 
                     <strong>Questions:</strong>
 
-                    <show-mcq :question-text="'Question'" :options="['a','b','c']" :question-number="1"
-                              :correct-option-index="2" :points="4"></show-mcq>
+                    <div v-for="item in questions" :key="item.id">
 
-                    <show-msq :question-text="'Question'" :options="['a','b','c']" :question-number="1"
-                              :correct-option-index="2" :points="4"></show-msq>
+                        <div v-if="item.type === 1">
+                            <show-mcq :question-text="item.statement" :options="item.options" :question-number="item.position+1"
+                                      :correct-option-index="2" :points="item.points"></show-mcq>
+                        </div>
 
-                    <show-tfq :question-text="'Question'" :question-number="1"
-                              :correct-option-index="1" :points="4"></show-tfq>
+                        <div v-if="item.type === 2">
+                            <show-msq :question-text="'Question'" :options="['a','b','c']" :question-number="1"
+                                      :correct-option-index="2" :points="4"></show-msq>
+                        </div>
 
-                    <show-fbq :question-text="'Question'" :options="['a','b','c']" :question-number="1"
-                              :correct-option-index="2" :points="4"></show-fbq>
+                        <div v-if="item.type === 3">
+                            <show-fbq :question-text="'Question'" :options="['a','b','c']" :question-number="1"
+                                      :correct-option-index="2" :points="4"></show-fbq>
+                        </div>
 
+                        <div v-if="item.type === 4">
+                            <show-tfq :question-text="'Question'" :question-number="1"
+                                      :correct-option-index="1" :points="4"></show-tfq>
+                        </div>
+
+
+                    </div>
                 </v-container>
             </v-card>
         </v-container>
@@ -36,34 +48,43 @@
 
 <script>
 
-    import ShowMCQ from "../DisplayQuestionComponents/ShowMCQ";
-    import ShowMSQ from "../DisplayQuestionComponents/ShowMSQ";
-    import ShowFBQ from "../DisplayQuestionComponents/ShowFBQ";
-    import ShowTFQ from "../DisplayQuestionComponents/ShowTFQ";
+    import FBQResult from "../DisplayResultQuestions/FBQResult";
+    import MCQResult from "../DisplayResultQuestions/MCQResult";
+    import TFQResult from "../DisplayResultQuestions/TFQResult";
+    import MSQResult from "../DisplayResultQuestions/MSQResult";
+    import AccountManager from "../../models/AccountManager";
+    import instance from "../../axios";
+    import {debugLog} from "../../app-config";
 
     export default {
         name: "SingleResponse",
         props: ['quiz_id', 'response_id'],
         components: {
-            'show-mcq': ShowMCQ,
-            'show-msq': ShowMSQ,
-            'show-fbq': ShowFBQ,
-            'show-tfq': ShowTFQ,
+            'show-mcq': FBQResult,
+            'show-msq': MCQResult,
+            'show-fbq': TFQResult,
+            'show-tfq': MSQResult,
         },
         data() {
             return {
-                quizTitle: '',
-                quizTopic: '',
-                quizDescription: '',
-                quizDuration: '',
-                topicsText: [],
-                topicsLoading: false,
+                questions: ''
             }
+        },
+        async mounted() {
+            const token = await AccountManager.getAccessToken();
+            let response = await instance.get(`/submission/id/${this.response_id}`, {
+                headers: {
+                    authorization: token
+                }
+            });
+
+            this.questions = response.data.quiz.questions;
+            debugLog(response)
         },
         methods: {
             onBackButtonPress() {
                 this.$router.push({
-                    path: '/home/quiz/all/responses/' + this.quiz_id,
+                    path: `/home/quiz/all/responses/` + this.quiz_id,
                     query: {quiz_title: this.$route.query.quiz_title}
                 })
             }

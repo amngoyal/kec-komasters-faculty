@@ -62,6 +62,7 @@
                 cardStyle: {
                     'border-left': '8px solid red'
                 },
+                optionsText:[],
             }
         },
         mounted() {
