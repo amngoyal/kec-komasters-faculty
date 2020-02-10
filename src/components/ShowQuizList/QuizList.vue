@@ -9,23 +9,23 @@
                     <th class="text-left">Topic</th>
                     <th class="text-center">Duration</th>
                     <th class="text-center">No. of questions</th>
-                    <th class="text-center">Points</th>
-                    <th class="text-left">Created On</th>
+                    <th class="text-center">Max Score</th>
+                    <th class="text-left">Created At</th>
                     <th class="text-center">Status</th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="item in data" :key="item.quiz_id">
-                    <td>{{ item.title }}</td>
+                <tr v-for="item in data" :key="item.id" >
+                    <td><a :href="'/home/quiz/all/'+item.id">{{item.title}}</a></td>
                     <td>{{ item.topic.label }}</td>
-                    <td class="text-center">{{ item.duration }} minutes</td>
+                    <td class="text-center">{{ item.duration }} min</td>
                     <td class="text-center">{{ item.questionCount }}</td>
                     <td class="text-center">{{ item.maxScore }}</td>
                     <td>{{ item.createdAt }}</td>
-                    <td class="text-center">Enabled</td>
+                    <td class="text-center">{{item.disabled?'Disabled':'Enabled'}}</td>
                     <td>
-                        <v-btn class="primary" :to="'/home/quiz/all/view-quiz/'+item.id">View</v-btn>
+                        <v-btn class="primary" :to="'/home/quiz/all/responses/'+item.id">View Responses</v-btn>
                     </td>
                 </tr>
                 </tbody>
@@ -54,7 +54,7 @@
             try {
 
                 const token = await AccountManager.getAccessToken();
-                let response = await instance.get(`/faculty/${AccountManager.user.id}/quiz?${this.limit}&${this.offset}`, {
+                let response = await instance.get(`/faculty/${AccountManager.user.id}/quiz?limit=${this.limit}&offset=${this.offset}`, {
                     headers: {
                         authorization: token
                     }

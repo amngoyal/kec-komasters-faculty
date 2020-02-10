@@ -9,7 +9,7 @@ import ShowAllQuiz from "../views/ShowAllQuiz";
 import ShowAllAnalysis from "../views/ShowAllAnalysis";
 import QuizList from "../components/ShowQuizList/QuizList";
 import ViewQuiz from "../components/ShowQuizList/ViewQuiz";
-import ViewResponses from "../components/ShowQuizList/ViewResponses";
+import ViewResponses from "../components/ShowQuizList/SingleResponse";
 
 import AccountManager from '../models/AccountManager'
 
@@ -46,12 +46,12 @@ const routes = [{
                         component: QuizList
                     },
                     {
-                        path: 'view-quiz/:quiz_id',
+                        path: ':quiz_id',
                         name: 'ViewQuiz',
                         component: ViewQuiz
                     },
                     {
-                        path: 'view-responses/:quiz_id',
+                        path: 'responses/:quiz_id',
                         name: 'ViewResponses',
                         component: ViewResponses
                     },
