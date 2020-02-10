@@ -1,22 +1,26 @@
 <template>
+    <div>
 
-    <v-container>
+        <v-app-bar>
+            <v-toolbar-title>Your Uploaded Quiz</v-toolbar-title>
+        </v-app-bar>
+
         <v-simple-table fixed-header>
             <template v-slot:default>
                 <thead>
                 <tr>
-                    <th class="text-left">Title</th>
-                    <th class="text-left">Topic</th>
-                    <th class="text-center">Duration</th>
-                    <th class="text-center">No. of questions</th>
-                    <th class="text-center">Max Score</th>
-                    <th class="text-left">Created At</th>
-                    <th class="text-center">Status</th>
+                    <th class="text-left subtitle-2">Title</th>
+                    <th class="text-left subtitle-2">Topic</th>
+                    <th class="text-center subtitle-2">Duration</th>
+                    <th class="text-center subtitle-2">No. of questions</th>
+                    <th class="text-center subtitle-2">Max Score</th>
+                    <th class="text-left subtitle-2">Created At</th>
+                    <th class="text-center subtitle-2">Status</th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="item in data" :key="item.id" >
+                <tr v-for="item in data" :key="item.id">
                     <td><a :href="'/home/quiz/all/'+item.id">{{item.title}}</a></td>
                     <td>{{ item.topic.label }}</td>
                     <td class="text-center">{{ item.duration }} min</td>
@@ -25,14 +29,14 @@
                     <td>{{ item.createdAt }}</td>
                     <td class="text-center">{{item.disabled?'Disabled':'Enabled'}}</td>
                     <td>
-                        <v-btn class="primary" :to="'/home/quiz/all/responses/'+item.id">View Responses</v-btn>
+                        <v-btn class="primary" @click="onViewResponseButtonClick(item.id,item.title)">View Responses</v-btn>
                     </td>
                 </tr>
                 </tbody>
             </template>
         </v-simple-table>
-    </v-container>
 
+    </div>
 </template>
 
 <script>
@@ -60,23 +64,28 @@
                     }
                 });
 
-               /* let response = await instance.get(`/submission/quiz/74?limit=10&offset=0`, {
-                    headers: {
-                        authorization: token
-                    }
-                });*/
+                /* let response = await instance.get(`/submission/quiz/74?limit=10&offset=0`, {
+                     headers: {
+                         authorization: token
+                     }
+                 });*/
 
-              /*  let response = await instance.get(`/submission/id/101`, {
-                    headers: {
-                        authorization: token
-                    }
-                });*/
+                /*  let response = await instance.get(`/submission/id/101`, {
+                      headers: {
+                          authorization: token
+                      }
+                  });*/
 
                 this.data = response.data;
                 debugLog(response.data);
 
             } catch (e) {
                 errorLog(e.response);
+            }
+        },
+        methods: {
+            onViewResponseButtonClick(id,title) {
+                this.$router.push({path: '/home/quiz/all/responses/' + id, query: {quiz_title: title}})
             }
         }
     }

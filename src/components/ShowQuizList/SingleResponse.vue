@@ -2,11 +2,11 @@
     <div>
         <v-app-bar>
             <v-app-bar-nav-icon>
-                <v-btn icon to="/home/quiz/all/quiz-list">
+                <v-btn icon @click="onBackButtonPress">
                     <v-icon>mdi-arrow-left</v-icon>
                 </v-btn>
             </v-app-bar-nav-icon>
-            <v-toolbar-title></v-toolbar-title>
+            <v-toolbar-title>{{this.$route.query.name +" - "+this.$route.query.quiz_title}}</v-toolbar-title>
         </v-app-bar>
 
         <v-container>
@@ -42,7 +42,8 @@
     import ShowTFQ from "../DisplayQuestionComponents/ShowTFQ";
 
     export default {
-        name: "ViewQuiz",
+        name: "SingleResponse",
+        props: ['quiz_id', 'response_id'],
         components: {
             'show-mcq': ShowMCQ,
             'show-msq': ShowMSQ,
@@ -60,8 +61,11 @@
             }
         },
         methods: {
-            onQuizMetaDataChange() {
-
+            onBackButtonPress() {
+                this.$router.push({
+                    path: '/home/quiz/all/responses/' + this.quiz_id,
+                    query: {quiz_title: this.$route.query.quiz_title}
+                })
             }
         }
     }

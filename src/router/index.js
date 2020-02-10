@@ -9,18 +9,19 @@ import ShowAllQuiz from "../views/ShowAllQuiz";
 import ShowAllAnalysis from "../views/ShowAllAnalysis";
 import QuizList from "../components/ShowQuizList/QuizList";
 import ViewQuiz from "../components/ShowQuizList/ViewQuiz";
-import ViewResponses from "../components/ShowQuizList/SingleResponse";
+import SingleResponse from "../components/ShowQuizList/SingleResponse";
+import ResponseList from "../components/ShowQuizList/ResponseList";
 
 import AccountManager from '../models/AccountManager'
 
 Vue.use(VueRouter);
 
 const routes = [{
-        path: "*",
-        redirect: {
-            name: "Login",
-        }
-    },
+    path: "*",
+    redirect: {
+        name: "Login",
+    }
+},
     {
         path: '/home',
         name: 'Home',
@@ -29,10 +30,10 @@ const routes = [{
         },
         component: Home,
         children: [{
-                path: 'quiz/create',
-                name: 'CreateQuiz',
-                component: CreateQuiz,
-            },
+            path: 'quiz/create',
+            name: 'CreateQuiz',
+            component: CreateQuiz,
+        },
             {
                 path: 'quiz/all',
                 name: 'ShowAllQuiz',
@@ -40,21 +41,31 @@ const routes = [{
                     name: 'QuizList'
                 },
                 component: ShowAllQuiz,
-                children: [{
+                children: [
+                    {
                         path: 'quiz-list',
                         name: 'QuizList',
-                        component: QuizList
+                        component: QuizList,
                     },
                     {
                         path: ':quiz_id',
                         name: 'ViewQuiz',
-                        component: ViewQuiz
+                        component: ViewQuiz,
+                        props: true
                     },
                     {
                         path: 'responses/:quiz_id',
-                        name: 'ViewResponses',
-                        component: ViewResponses
+                        name: 'ResponseList',
+                        component: ResponseList,
+                        props: true,
                     },
+                    {
+                        path: 'responses/:quiz_id/:response_id',
+                        name: 'SingleResponse',
+                        component: SingleResponse,
+                        props: true
+                    },
+
                 ]
             },
             {
