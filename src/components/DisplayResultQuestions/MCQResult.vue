@@ -7,7 +7,7 @@
                 <v-layout>
                     <p class="ml-1">Question {{questionNumber}}</p>
                     <v-spacer/>
-                    <p class="mr-5" :style="(this.correct) ?'color: darkgreen' : 'color: red'">Points obtained:
+                    <p class="mr-5" :style="(this.isCorrect) ?'color: darkgreen' : 'color: red'">Points obtained:
                         {{points}}</p>
                 </v-layout>
 
@@ -24,12 +24,12 @@
 
                 <v-flex class="ml-4 mt-1" xs12 sm8 offset-sm0>
 
-                    <v-layout :key="index" v-for="(i,index) in options">
+                    <v-layout :key="index" v-for="(i,index) in optionsText">
                         <v-textarea
                                 rows="1"
                                 auto-grow
                                 :background-color="optionBackgroundColor(index)"
-                                v-model="options[index]"
+                                v-model="optionsText[index]"
                                 solo
                                 filled
                                 :dark="!!optionBackgroundColor(index)"
@@ -54,23 +54,27 @@
             points: Number,
             selectedOptionIndex: Number,
             options: Array,
-            correctOptionIndex: Number
+            isCorrect: Boolean
         },
         data: () => {
             return {
-                correct: '',
+
                 cardStyle: {
                     'border-left': '8px solid red'
                 },
                 optionsText:[],
+                correctOptionIndex: '',
             }
         },
         mounted() {
-            if (this.selectedOptionIndex === this.correctOptionIndex) {
-                this.correct = true
-            }
 
-            if (this.correct) {
+            this.options.forEach((item,index)=>{
+                this.optionsText.push(item.text);
+                if(item.isCorrect)
+                    this.correctOptionIndex = index
+            });
+
+            if (this.isCorrect) {
                 this.cardStyle = {
                     'border-left': '8px solid green'
                 }
@@ -78,7 +82,7 @@
         },
         methods: {
             optionBackgroundColor(index) {
-                if (this.correct) {
+                if (this.isCorrect) {
                     if (this.correctOptionIndex === index) {
                         return 'green'
                     }

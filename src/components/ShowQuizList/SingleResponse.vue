@@ -19,23 +19,30 @@
                     <div v-for="item in questions" :key="item.id">
 
                         <div v-if="item.type === 1">
-                            <show-mcq :question-text="item.statement" :options="item.options" :question-number="item.position+1"
-                                      :correct-option-index="2" :points="item.points"></show-mcq>
+                            <show-mcq :question-text="item.statement" :options="item.options"
+                                      :question-number="item.position+1"
+                                      :correct-option-index="2" :points="item.points"
+                                      :is-correct="isCorrect(item.id)"></show-mcq>
                         </div>
 
                         <div v-if="item.type === 2">
-                            <show-msq :question-text="'Question'" :options="['a','b','c']" :question-number="1"
-                                      :correct-option-index="2" :points="4"></show-msq>
+                            <show-msq :question-text="item.statement" :options="['a','b','c']"
+                                      :question-number="item.position+1"
+                                      :correct-option-index="2" :points="item.points"
+                                      :is-correct="isCorrect(item.id)"></show-msq>
                         </div>
 
                         <div v-if="item.type === 3">
-                            <show-fbq :question-text="'Question'" :options="['a','b','c']" :question-number="1"
-                                      :correct-option-index="2" :points="4"></show-fbq>
+                            <show-fbq :question-text="item.statement" :options="['a','b','c']"
+                                      :question-number="item.position+1"
+                                      :correct-option-index="2" :points="item.points"
+                                      :is-correct="isCorrect(item.id)"></show-fbq>
                         </div>
 
                         <div v-if="item.type === 4">
-                            <show-tfq :question-text="'Question'" :question-number="1"
-                                      :correct-option-index="1" :points="4"></show-tfq>
+                            <show-tfq :question-text="item.statement" :question-number="item.position+1"
+                                      :correct-option-index="1" :points="item.points"
+                                      :is-correct="isCorrect(item.id)"></show-tfq>
                         </div>
 
 
@@ -60,14 +67,15 @@
         name: "SingleResponse",
         props: ['quiz_id', 'response_id'],
         components: {
-            'show-mcq': FBQResult,
-            'show-msq': MCQResult,
-            'show-fbq': TFQResult,
-            'show-tfq': MSQResult,
+            'show-mcq': MCQResult,
+            'show-msq': MSQResult,
+            'show-fbq': FBQResult,
+            'show-tfq': TFQResult,
         },
         data() {
             return {
-                questions: ''
+                questions: '',
+                answers: ''
             }
         },
         async mounted() {
@@ -79,6 +87,8 @@
             });
 
             this.questions = response.data.quiz.questions;
+            this.answers = response.data.answers;
+
             debugLog(response)
         },
         methods: {
@@ -87,8 +97,21 @@
                     path: `/home/quiz/all/responses/` + this.quiz_id,
                     query: {quiz_title: this.$route.query.quiz_title}
                 })
+            },
+
+            isCorrect(questionId) {
+                let correct = true;
+
+                for(let i = 0; i<this.answers.length; i++){
+                    if(this.answers[i].question.id === questionId){
+                        correct = false;
+                        break;
+                    }
+                }
+
+                return correct;
             }
-        }
+        },
     }
 </script>
 
