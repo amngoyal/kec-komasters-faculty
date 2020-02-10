@@ -9,13 +9,13 @@ import ShowAllQuiz from "../views/ShowAllQuiz";
 import ShowAllAnalysis from "../views/ShowAllAnalysis";
 import QuizList from "../components/ShowQuizList/QuizList";
 import ViewQuiz from "../components/ShowQuizList/ViewQuiz";
+import ViewResponses from "../components/ShowQuizList/ViewResponses";
 
 import AccountManager from '../models/AccountManager'
 
 Vue.use(VueRouter);
 
-const routes = [
-    {
+const routes = [{
         path: "*",
         redirect: {
             name: "Login",
@@ -28,8 +28,7 @@ const routes = [
             name: "CreateQuiz",
         },
         component: Home,
-        children: [
-            {
+        children: [{
                 path: 'quiz/create',
                 name: 'CreateQuiz',
                 component: CreateQuiz,
@@ -41,8 +40,7 @@ const routes = [
                     name: 'QuizList'
                 },
                 component: ShowAllQuiz,
-                children: [
-                    {
+                children: [{
                         path: 'quiz-list',
                         name: 'QuizList',
                         component: QuizList
@@ -51,6 +49,11 @@ const routes = [
                         path: 'view-quiz/:quiz_id',
                         name: 'ViewQuiz',
                         component: ViewQuiz
+                    },
+                    {
+                        path: 'view-responses/:quiz_id',
+                        name: 'ViewResponses',
+                        component: ViewResponses
                     },
                 ]
             },
