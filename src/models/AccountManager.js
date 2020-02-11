@@ -1,5 +1,6 @@
 import {KEY_ACCESS_TOKEN, KEY_REFRESH_TOKEN, KEY_CURRENT_USER, KEY_EXPIRATION_TIME} from '../utils/constants';
 import jwt from 'jsonwebtoken';
+import {errorLog} from "../app-config";
 import instance from "../axios";
 
 class AccountManager {
@@ -49,6 +50,8 @@ class AccountManager {
         if (Math.floor(Date.now() / 1000) > this.expirationTime) {
             await this.getNewAccessToken()
         }
+
+        await this.getNewAccessToken();
         return this.accessToken;
     }
 
@@ -70,15 +73,22 @@ class AccountManager {
     }
 
     async getNewAccessToken() {
+        try {
 
-        let response = await instance.get('/auth/refresh', {
-            headers: {
-                Authorization: this.refreshToken
-            }
-        });
+            let response = await instance.get('/auth/refresh', {
+                headers: {
+                    Authorization: this.refreshToken
+                }
+            });
 
 
-        this.updateAccessToken(response.data)
+            this.updateAccessToken(response.data)
+        } catch (e) {
+            errorLog(e);
+            window.dispatchEvent(new Event('session_expired'));
+            this.deleteUserData();
+
+        }
 
     }
 

@@ -164,21 +164,6 @@
             </v-btn>
         </v-snackbar>
 
-        <!------------------ Dialog ------------------->
-        <v-dialog v-model="dialog" persistent max-width="290">
-
-            <v-card>
-                <v-card-title class="headline">Session Expired!!</v-card-title>
-                <v-card-text>Your session is expired. You have to login again to continue.
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="green darken-1" text @click="onLoginAgainButtonPress" outlined>Login Again</v-btn>
-                </v-card-actions>
-            </v-card>
-
-        </v-dialog>
-
     </div>
 </template>
 
@@ -231,18 +216,9 @@
 
 
             } catch (e) {
+                debugLog(e);
 
-                if (e.response != null) {
-
-                    debugLog(e);
-                    if (e.response.status === 401) {
-                        this.dialog = true;
-                        AccountManager.deleteUserData();
-                    } else {
-                        this.showSnackbar("Error in connecting with server")
-                    }
-
-                }
+                this.showSnackbar("Error in connecting with server")
             }
         },
         data() {
@@ -261,7 +237,6 @@
                 snackbar: false,
                 snackbarText: '',
 
-                dialog: false,
 
                 loading: false,
 
@@ -330,9 +305,6 @@
 
         methods: {
 
-            onLoginAgainButtonPress() {
-                this.$router.replace('Login')
-            },
 
             /*------------------------------ observes the data change in quiz questions -------------------------- */
             onQuizDataChange() {

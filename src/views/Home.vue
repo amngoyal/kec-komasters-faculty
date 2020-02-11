@@ -93,6 +93,22 @@
         <v-content>
             <router-view></router-view>
         </v-content>
+
+        <!------------------ Dialog ------------------->
+        <v-dialog v-model="dialog" persistent max-width="290">
+
+            <v-card>
+                <v-card-title class="headline">Session Expired!!</v-card-title>
+                <v-card-text>Your session is expired. You have to login again to continue.
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="green darken-1" text @click="onLoginAgainButtonPress" outlined>Login Again</v-btn>
+                </v-card-actions>
+            </v-card>
+
+        </v-dialog>
+
     </v-app>
 </template>
 <script>
@@ -103,6 +119,7 @@
         data: () => ({
             nav: false,
             userName: 'user_name',
+            dialog: false,
 
             userData: {},
             quizItems: [
@@ -121,6 +138,12 @@
 
         created() {
             window.addEventListener("resize", this.onWindowResize);
+
+            window.addEventListener('session_expired', ()=>{
+                console.log("Session Expired event fired");
+                this.dialog = true
+            })
+
         },
 
         destroyed() {
@@ -154,7 +177,10 @@
             onLogout() {
                 AccountManager.deleteUserData();
                 this.$router.replace('/login');
-            }
+            },
+            onLoginAgainButtonPress() {
+                this.$router.replace('Login')
+            },
         }
     }
 </script>
