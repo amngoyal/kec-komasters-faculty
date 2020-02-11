@@ -1,168 +1,175 @@
 <template>
     <div>
-        <v-stepper v-model="parentStepper">
-
-            <!----------------------------------- stepper header ---------------------------->
-            <v-stepper-header>
-                <v-stepper-step editable step="1">Details of Quiz</v-stepper-step>
-
-                <v-divider></v-divider>
-
-                <v-stepper-step :editable="editableStepTwo" step="2">Questions of Quiz</v-stepper-step>
-
-                <v-divider></v-divider>
-
-                <v-stepper-step :editable="editableStepThree" v-on:click="onStepperStepThreeClick" step="3">Submit
-                    Quiz
-                </v-stepper-step>
-
-            </v-stepper-header>
 
 
-            <!------------------------------------ stepper items --------------------------------------------->
-            <v-stepper-items>
+        <error :state="this.state"></error>
 
-                <!---------------------------- step 1 -------------------------------------->
+        <div v-if="this.isContent">
+            <v-stepper v-model="parentStepper">
 
-                <v-stepper-content step="1">
+                <!----------------------------------- stepper header ---------------------------->
+                <v-stepper-header>
+                    <v-stepper-step editable step="1">Details of Quiz</v-stepper-step>
 
-                    <v-card flat outlined class="mb-12" color="grey lighten-3">
-                        <v-container>
-                            <v-textarea
-                                    rows="1"
-                                    auto-grow
-                                    :hint="(quizTitle.length < 10)?'Title should be greater than 10 characters.' : ''"
-                                    @input="onQuizMetaDataChange"
-                                    v-model="quizTitle"
-                                    @keydown="$event.keyCode === 32 && quizTitle.length === 0 ? $event.preventDefault() : false"
-                                    placeholder="Enter Title of Quiz"
-                                    background-color="white"
-                                    outlined>
+                    <v-divider></v-divider>
 
-                            </v-textarea>
+                    <v-stepper-step :editable="editableStepTwo" step="2">Questions of Quiz</v-stepper-step>
 
-                            <v-textarea
-                                    rows="1"
-                                    auto-grow
-                                    :hint="(quizDescription.length < 10)?'Description should be greater than 10 characters.' : ''"
-                                    @input="onQuizMetaDataChange"
-                                    v-model="quizDescription"
-                                    @keydown="$event.keyCode === 32 && quizDescription.length === 0 ? $event.preventDefault() : false"
-                                    placeholder="Enter Description of Quiz"
-                                    background-color="white"
-                                    outlined>
+                    <v-divider></v-divider>
 
-                            </v-textarea>
+                    <v-stepper-step :editable="editableStepThree" v-on:click="onStepperStepThreeClick" step="3">Submit
+                        Quiz
+                    </v-stepper-step>
 
-                            <v-text-field
-                                    v-model="quizDuration"
-                                    @input="onQuizMetaDataChange"
-                                    @keydown="$event.keyCode === 110 || $event.keyCode === 109 ||  $event.keyCode === 107 || $event.keyCode === 190 || $event.keyCode === 69  ? $event.preventDefault() : false"
-                                    placeholder="Enter Time Limit of Quiz (in minutes)"
-                                    type="number"
-                                    background-color="white"
-                                    outlined>
-
-                            </v-text-field>
-
-                            <v-overflow-btn
-                                    solo
-                                    flat
-                                    :loading="topicsLoading"
-                                    @input="onQuizMetaDataChange"
-                                    background-color="white"
-                                    v-model="quizTopic"
-                                    :items="topicsText"
-                                    label="Topic"
-                            ></v-overflow-btn>
+                </v-stepper-header>
 
 
-                            <scopes ref="scopeComponent" v-model="quizScopes" @input="onQuizMetaDataChange"
-                                    class="pa-4"></scopes>
+                <!------------------------------------ stepper items --------------------------------------------->
+                <v-stepper-items>
 
-                        </v-container>
-                    </v-card>
+                    <!---------------------------- step 1 -------------------------------------->
 
-                    <v-btn @click="() => { this.parentStepper = 2; this.editableStepTwo = true; }"
-                           :disabled="disableStepOneContinueButton"
-                           color="primary">
-                        Continue to Add Questions
-                    </v-btn>
+                    <v-stepper-content step="1">
 
-                </v-stepper-content>
+                        <v-card flat outlined class="mb-12" color="grey lighten-3">
+                            <v-container>
+                                <v-textarea
+                                        rows="1"
+                                        auto-grow
+                                        :hint="(quizTitle.length < 10)?'Title should be greater than 10 characters.' : ''"
+                                        @input="onQuizMetaDataChange"
+                                        v-model="quizTitle"
+                                        @keydown="$event.keyCode === 32 && quizTitle.length === 0 ? $event.preventDefault() : false"
+                                        placeholder="Enter Title of Quiz"
+                                        background-color="white"
+                                        outlined>
 
+                                </v-textarea>
 
-                <!---------------------------- step 2 -------------------------------------->
+                                <v-textarea
+                                        rows="1"
+                                        auto-grow
+                                        :hint="(quizDescription.length < 10)?'Description should be greater than 10 characters.' : ''"
+                                        @input="onQuizMetaDataChange"
+                                        v-model="quizDescription"
+                                        @keydown="$event.keyCode === 32 && quizDescription.length === 0 ? $event.preventDefault() : false"
+                                        placeholder="Enter Description of Quiz"
+                                        background-color="white"
+                                        outlined>
 
-                <v-stepper-content step="2" class="pa-1" style="background-color: #f5f5f5">
+                                </v-textarea>
 
-                    <add-questions ref="addQuestionsComponent" v-model="finalQuizData"
-                                   v-on:input="onQuizDataChange()"></add-questions>
+                                <v-text-field
+                                        v-model="quizDuration"
+                                        @input="onQuizMetaDataChange"
+                                        @keydown="$event.keyCode === 110 || $event.keyCode === 109 ||  $event.keyCode === 107 || $event.keyCode === 190 || $event.keyCode === 69  ? $event.preventDefault() : false"
+                                        placeholder="Enter Time Limit of Quiz (in minutes)"
+                                        type="number"
+                                        background-color="white"
+                                        outlined>
 
-                </v-stepper-content>
+                                </v-text-field>
 
-
-                <!---------------------------- step 3 -------------------------------------->
-
-                <v-stepper-content step="3">
-
-                    <v-card flat outlined class="mb-12" color="grey lighten-3">
-                        <v-container>
-                            <strong>Quiz Title:</strong>&ensp;{{quizTitle}} <br>
-                            <strong>Quiz Description:</strong>&ensp;{{quizDescription}} <br>
-                            <strong>Quiz Duration:</strong>&ensp;{{quizDuration}} <br>
-                            <strong>Quiz Topic:</strong>&ensp;{{quizTopic}} <br>
-                            <hr>
-                            <strong>Easy Level Quiz:</strong> <br>
-                            Questions:&ensp;{{totalEasyLevelQuestions}},&emsp; Points:&ensp;{{totalEasyLevelQuizPoints}}
-                            <br>
-                            <hr>
-                            <strong>Medium Level Quiz:</strong><br>
-                            Questions:&ensp;{{totalMediumLevelQuestions}},&emsp; Points:&ensp;{{totalMediumLevelQuizPoints}}<br>
-                            <hr>
-                            <strong>Hard Level Quiz:</strong><br>
-                            Questions:&ensp;{{totalHardLevelQuestions}},&emsp; Points:&ensp;{{totalHardLevelQuizPoints}}<br>
-                            <hr>
-                            <strong>Total Questions:</strong>&ensp;{{totalQuestions}}<br>
-                            <strong>Total Points:</strong>&ensp;{{totalPoints}}
-                            <hr>
-                            <strong>Scopes:</strong>&ensp;{{quizScopes.value}}
-                            <hr>
-
-                            <v-checkbox
-                                    v-model="checkbox"
-                                    label="Quiz cannot be changed once submitted"
-                            ></v-checkbox>
-
-                        </v-container>
-
-                    </v-card>
-
-                    <v-btn color="primary" :disabled="!checkbox" :loading="loading" @click="submitQuiz()"> Submit Quiz
-                    </v-btn>
-
-                    <v-btn text>Cancel</v-btn>
-                </v-stepper-content>
-
-            </v-stepper-items>
-        </v-stepper>
+                                <v-overflow-btn
+                                        solo
+                                        flat
+                                        :loading="topicsLoading"
+                                        @input="onQuizMetaDataChange"
+                                        background-color="white"
+                                        v-model="quizTopic"
+                                        :items="topicsText"
+                                        label="Topic"
+                                ></v-overflow-btn>
 
 
-        <!------------------ Snackbar ------------------->
+                                <scopes ref="scopeComponent" v-model="quizScopes" @input="onQuizMetaDataChange"
+                                        class="pa-4"></scopes>
 
-        <v-snackbar
-                v-model="snackbar"
+                            </v-container>
+                        </v-card>
 
-        >
-            {{ snackbarText }}
-            <v-btn
-                    color="primary"
-                    text
-                    @click="snackbar = false"
+                        <v-btn @click="() => { this.parentStepper = 2; this.editableStepTwo = true; }"
+                               :disabled="disableStepOneContinueButton"
+                               color="primary">
+                            Continue to Add Questions
+                        </v-btn>
+
+                    </v-stepper-content>
+
+
+                    <!---------------------------- step 2 -------------------------------------->
+
+                    <v-stepper-content step="2" class="pa-1" style="background-color: #f5f5f5">
+
+                        <add-questions ref="addQuestionsComponent" v-model="finalQuizData"
+                                       v-on:input="onQuizDataChange()"></add-questions>
+
+                    </v-stepper-content>
+
+
+                    <!---------------------------- step 3 -------------------------------------->
+
+                    <v-stepper-content step="3">
+
+                        <v-card flat outlined class="mb-12" color="grey lighten-3">
+                            <v-container>
+                                <strong>Quiz Title:</strong>&ensp;{{quizTitle}} <br>
+                                <strong>Quiz Description:</strong>&ensp;{{quizDescription}} <br>
+                                <strong>Quiz Duration:</strong>&ensp;{{quizDuration}} <br>
+                                <strong>Quiz Topic:</strong>&ensp;{{quizTopic}} <br>
+                                <hr>
+                                <strong>Easy Level Quiz:</strong> <br>
+                                Questions:&ensp;{{totalEasyLevelQuestions}},&emsp; Points:&ensp;{{totalEasyLevelQuizPoints}}
+                                <br>
+                                <hr>
+                                <strong>Medium Level Quiz:</strong><br>
+                                Questions:&ensp;{{totalMediumLevelQuestions}},&emsp; Points:&ensp;{{totalMediumLevelQuizPoints}}<br>
+                                <hr>
+                                <strong>Hard Level Quiz:</strong><br>
+                                Questions:&ensp;{{totalHardLevelQuestions}},&emsp; Points:&ensp;{{totalHardLevelQuizPoints}}<br>
+                                <hr>
+                                <strong>Total Questions:</strong>&ensp;{{totalQuestions}}<br>
+                                <strong>Total Points:</strong>&ensp;{{totalPoints}}
+                                <hr>
+                                <strong>Scopes:</strong>&ensp;{{quizScopes.value}}
+                                <hr>
+
+                                <v-checkbox
+                                        v-model="checkbox"
+                                        label="Quiz cannot be changed once submitted"
+                                ></v-checkbox>
+
+                            </v-container>
+
+                        </v-card>
+
+                        <v-btn color="primary" :disabled="!checkbox" :loading="loading" @click="submitQuiz()"> Submit
+                            Quiz
+                        </v-btn>
+
+                        <v-btn text>Cancel</v-btn>
+                    </v-stepper-content>
+
+                </v-stepper-items>
+            </v-stepper>
+
+
+            <!------------------ Snackbar ------------------->
+
+            <v-snackbar
+                    v-model="snackbar"
+
             >
-                Close
-            </v-btn>
-        </v-snackbar>
+                {{ snackbarText }}
+                <v-btn
+                        color="primary"
+                        text
+                        @click="snackbar = false"
+                >
+                    Close
+                </v-btn>
+            </v-snackbar>
+        </div>
 
     </div>
 </template>
@@ -173,6 +180,9 @@
     import instance from "../axios";
     import AccountManager from "../models/AccountManager";
     import {debugLog} from '../app-config'
+    import ErrorComponent from "../components/ErrorComponent";
+
+    import {StateRest, StateLoading, StateContent, StateError} from "../models/State";
 
     export default {
 
@@ -194,35 +204,15 @@
         name: "CreateQuiz",
         components: {
             'add-questions': AddQuestions,
-            scopes: Scopes
+            scopes: Scopes,
+            error: ErrorComponent
         },
         async mounted() {
-
-
-            try {
-                const token = await AccountManager.getAccessToken();
-                let topics = await instance.get('/topic', {
-                    headers: {
-                        Authorization: token
-                    }
-                });
-
-                this.topics = topics.data;
-
-                this.topics.forEach((topic) => {
-                    this.topicsText.push(topic.label);
-                });
-                this.topicsLoading = false
-
-
-            } catch (e) {
-                debugLog(e);
-
-                this.showSnackbar("Error in connecting with server")
-            }
+            this.fetchTopics()
         },
         data() {
             return {
+                state: new StateRest(),
                 quizTitle: '',
                 quizTopic: '',
                 quizDescription: '',
@@ -264,11 +254,18 @@
                 },
 
                 quizPayload: {},
+                viewError: false,
+                errorMsg: '',
+
 
             }
         },
 
         computed: {
+            isContent() {
+                return this.state instanceof StateContent
+            },
+
             quizDetailsValidation() {
                 return this.quizTitle.length >= 10 && this.quizDescription.length >= 10 && this.quizDuration !== ''
                     && this.quizTopic !== '' && this.quizScopes.value.length !== 0;
@@ -304,7 +301,33 @@
         },
 
         methods: {
+            async fetchTopics() {
+                try {
+                    this.state = new StateLoading();
+                    const token = await AccountManager.getAccessToken();
+                    let topics = await instance.get('/topic', {
+                        headers: {
+                            Authorization: token
+                        }
+                    });
 
+                    this.topics = topics.data;
+
+                    this.topics.forEach((topic) => {
+                        this.topicsText.push(topic.label);
+                    });
+                    this.topicsLoading = false;
+
+                    throw new Error();
+
+                    //this.state = new StateContent(this.topic);
+
+                } catch (e) {
+                    debugLog(e);
+                    this.state = new StateError("Error in connecting with server. Please try again", this.fetchTopics);
+                    this.showSnackbar("Error in connecting with server")
+                }
+            },
 
             /*------------------------------ observes the data change in quiz questions -------------------------- */
             onQuizDataChange() {

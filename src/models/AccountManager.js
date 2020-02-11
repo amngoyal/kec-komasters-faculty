@@ -74,15 +74,14 @@ class AccountManager {
 
     async getNewAccessToken() {
         try {
-
             let response = await instance.get('/auth/refresh', {
                 headers: {
                     Authorization: this.refreshToken
                 }
             });
 
+            this.updateAccessToken(response.data);
 
-            this.updateAccessToken(response.data)
         } catch (e) {
             errorLog(e);
             window.dispatchEvent(new Event('session_expired'));
