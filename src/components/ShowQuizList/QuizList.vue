@@ -1,11 +1,11 @@
 <template>
     <div>
 
-        <v-app-bar>
+        <v-app-bar flat>
             <v-toolbar-title>Your Uploaded Quiz</v-toolbar-title>
         </v-app-bar>
 
-        <v-simple-table fixed-header>
+        <v-simple-table fixed-header class="px-4">
             <template v-slot:default>
                 <thead>
                 <tr>
@@ -29,7 +29,9 @@
                     <td>{{ item.createdAt }}</td>
                     <td class="text-center">{{item.disabled?'Disabled':'Enabled'}}</td>
                     <td>
-                        <v-btn class="primary" @click="onViewResponseButtonClick(item.id,item.title)">View Responses</v-btn>
+                        <v-btn depressed class="primary" @click="onViewResponseButtonClick(item.id,item.title)">View
+                            Responses
+                        </v-btn>
                     </td>
                 </tr>
                 </tbody>
@@ -84,7 +86,7 @@
             }
         },
         methods: {
-            onViewResponseButtonClick(id,title) {
+            onViewResponseButtonClick(id, title) {
                 this.$router.push({path: '/home/quiz/all/responses/' + id, query: {quiz_title: title}})
             }
         }

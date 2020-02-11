@@ -16,7 +16,7 @@
                 <tr>
                     <th class="text-left subtitle-2">KecId</th>
                     <th class="text-left subtitle-2">Name</th>
-                    <th class="text-center subtitle-2">Class</th>
+                    <th class="text-left subtitle-2">Class</th>
                     <th class="text-center subtitle-2">Correct Questions</th>
                     <th class="text-center subtitle-2">Score Obtained</th>
                     <th class="text-center subtitle-2">Max Score</th>
@@ -28,7 +28,7 @@
                 <tr v-for="item in data" :key="item.id">
                     <td>{{item.submittedBy.kecId}}</td>
                     <td>{{item.submittedBy.name }}</td>
-                    <td class="text-center">{{'class' }}</td>
+                    <td class="text-left">{{`${item.submittedBy.cls.year} ${item.submittedBy.cls.branch.label} ${item.submittedBy.cls.section}`}}</td>
                     <td class="text-center">{{item.correctCount }}</td>
                     <td class="text-center">{{item.score }}</td>
                     <td class="text-center">{{ item.quiz.maxScore }}</td>
