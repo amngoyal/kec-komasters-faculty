@@ -10,10 +10,9 @@
             <v-toolbar-title>{{this.$route.query.quiz_title}}</v-toolbar-title>
             <v-spacer/>
 
-            <export-excel
-                    :data="excelFileJsonArray" :name="$route.query.quiz_title+ '.xls'" >
-                <v-btn outlined>Export Excel File</v-btn>
-            </export-excel>
+            <v-btn outlined @click="this.downloadReport">
+                <a id="download">Export Excel File</a>
+            </v-btn>
 
         </v-app-bar>
 
@@ -40,8 +39,8 @@
                     <td class="text-center">{{item.year}}</td>
                     <td class="text-center">{{item.branch}}</td>
                     <td class="text-center">{{item.section}}</td>
-                    <td class="text-center">{{item.correctCount}}/{{item.questionCount}}</td>
-                    <td class="text-center">{{item.score}}/{{item.maxScore}}</td>
+                    <td class="text-center">{{item.correctCount}} / {{item.questionCount}}</td>
+                    <td class="text-center">{{item.score}} / {{item.maxScore}}</td>
                     <td class="text-center">{{item.percentage}}</td>
                     <td>{{item.submittedAt}}</td>
                     <td>
@@ -63,6 +62,7 @@
     import AccountManager from "../../models/AccountManager";
     import instance from "../../axios";
     import {debugLog, errorLog} from "../../app-config";
+    import json2xls from 'json2xls'
 
 
     export default {
@@ -78,7 +78,7 @@
         computed: {
             excelFileJsonArray() {
                 return this.submissionList.map(item => {
-                   return {
+                    return {
                         'Time': item.submittedAt,
                         'Kec Id': item.kecId,
                         'Name': item.name,
@@ -137,6 +137,23 @@
                     query: {quiz_title: this.$route.query.quiz_title, name: name, kecId: kecId}
                 })
             },
+
+            downloadReport() {
+                let res = json2xls(this.excelFileJsonArray);
+
+                const buf = new ArrayBuffer(res.length);
+                const view = new Uint8Array(buf);
+                for (let i = 0; i !== res.length; ++i) view[i] = res.charCodeAt(i) & 0xFF;
+                const blob = new Blob([buf], {
+                    type: 'application/octet-stream'
+                });
+                const blobUrl = URL.createObjectURL(blob, {
+                    type: 'data:attachment/xlsx'
+                });
+                const a = document.getElementById('download');
+                a.download = this.$route.query.quiz_title + '.xlsx';
+                a.href = blobUrl;
+            }
         }
     }
 </script>
