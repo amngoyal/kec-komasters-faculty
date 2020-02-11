@@ -318,9 +318,7 @@
                     });
                     this.topicsLoading = false;
 
-                    throw new Error();
-
-                    //this.state = new StateContent(this.topic);
+                    this.state = new StateContent(this.topic);
 
                 } catch (e) {
                     debugLog(e);

@@ -1,18 +1,32 @@
 <template>
-    <div v-if="this.isNotContent">
-        <v-progress-circular
-                v-if="this.isLoading"
-                :size="70"
-                :width="7"
-                color="purple"
-                indeterminate
-        ></v-progress-circular>
+    <v-app v-if="this.isNotContent">
 
-        <h2 v-if="this.isError">Error</h2>
+        <v-row align="center" justify="center">
 
-        <v-btn v-if="this.isError" @click="retry()">Retry</v-btn>
+            <v-col cols="10" lg="4" md="6" sm="10" xs="10">
 
-    </div>
+                <v-card
+                        flat
+                        outlined
+                        class="pa-8 text-center"
+                        style="border-radius: 10px">
+
+                    <v-progress-circular
+                            v-if="this.isLoading"
+                            :size="70"
+                            :width="7"
+                            color="primary"
+                            indeterminate
+                    ></v-progress-circular>
+
+                    <h4 class="mb-6" v-if="this.isError">Error in loading components</h4>
+
+                    <v-btn color="primary" v-if="this.isError" @click="retry()">Retry</v-btn>
+                </v-card>
+            </v-col>
+        </v-row>
+
+    </v-app>
 </template>
 
 <script>
