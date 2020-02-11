@@ -427,7 +427,7 @@
 
                     try {
                         const token = await AccountManager.getAccessToken();
-                        let response = await instance.post('/quiz/new', this.quizPayload, {
+                        let response = await instance.post('/quiz', this.quizPayload, {
                             headers: {
                                 Authorization: token
                             }

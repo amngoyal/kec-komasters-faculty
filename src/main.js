@@ -4,6 +4,9 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify';
 
+import excel from 'vue-excel-export';
+
+Vue.use(excel);
 
 import 'bootstrap/dist/css/bootstrap.css'
 
@@ -19,6 +22,7 @@ Vue.config.productionTip = false;
 
 
 import AccountManager from "./models/AccountManager";
+
 AccountManager.setUserData();
 
 
