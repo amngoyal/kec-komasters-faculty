@@ -1,32 +1,17 @@
 <template>
-    <v-app v-if="this.isNotContent">
+    <div v-if="this.isNotContent" class="container">
+        <v-progress-circular
+                v-if="this.isLoading"
+                :size="70"
+                :width="7"
+                color="primary"
+                indeterminate
+        ></v-progress-circular>
 
-        <v-row align="center" justify="center">
+        <p class="mb-7 text-center" style="max-width: 400px; font-size: 18px" v-if="this.isError">{{this.errorText}}</p>
 
-            <v-col cols="10" lg="4" md="6" sm="10" xs="10">
-
-                <v-card
-                        flat
-                        outlined
-                        class="pa-8 text-center"
-                        style="border-radius: 10px">
-
-                    <v-progress-circular
-                            v-if="this.isLoading"
-                            :size="70"
-                            :width="7"
-                            color="primary"
-                            indeterminate
-                    ></v-progress-circular>
-
-                    <h4 class="mb-6" v-if="this.isError">Error in loading components</h4>
-
-                    <v-btn color="primary" v-if="this.isError" @click="retry()">Retry</v-btn>
-                </v-card>
-            </v-col>
-        </v-row>
-
-    </v-app>
+        <v-btn color="primary" class="btn" v-if="this.isError" @click="retry()">Retry</v-btn>
+    </div>
 </template>
 
 <script>
@@ -44,6 +29,9 @@
             }
         },
         computed: {
+            errorText() {
+                return this.state.message;
+            },
             isNotContent() {
                 return !(this.state instanceof StateContent) && !(this.state instanceof StateRest)
             },
@@ -61,5 +49,17 @@
 </script>
 
 <style scoped>
+
+    .container {
+        display: grid;
+        justify-content: center;
+        height: 100%;
+        align-content: center;
+    }
+
+    .btn{
+        width: 130px;
+        margin: auto;
+    }
 
 </style>

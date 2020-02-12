@@ -91,7 +91,7 @@
 
 
         <v-content>
-            <router-view></router-view>
+            <router-view style="height: 100%;"></router-view>
         </v-content>
 
         <!------------------ Dialog ------------------->
@@ -139,7 +139,7 @@
         created() {
             window.addEventListener("resize", this.onWindowResize);
 
-            window.addEventListener('session_expired', ()=>{
+            window.addEventListener('session_expired', () => {
                 console.log("Session Expired event fired");
                 this.dialog = true
             })

@@ -1,7 +1,6 @@
 <template>
     <div>
 
-
         <error :state="this.state"></error>
 
         <div v-if="this.isContent">
@@ -177,12 +176,13 @@
 <script>
     import AddQuestions from "../components/AddQuestions";
     import Scopes from "../components/Scopes/Scopes";
-    import instance from "../axios";
+    import instance, {getFrom} from "../axios";
     import AccountManager from "../models/AccountManager";
     import {debugLog} from '../app-config'
     import ErrorComponent from "../components/ErrorComponent";
 
     import {StateRest, StateLoading, StateContent, StateError} from "../models/State";
+    import {ErrorResult} from "../models/AppResult";
 
     export default {
 
@@ -222,7 +222,6 @@
 
                 topics: [],
                 topicsText: [],
-                topicsLoading: true,
 
                 snackbar: false,
                 snackbarText: '',
@@ -254,8 +253,6 @@
                 },
 
                 quizPayload: {},
-                viewError: false,
-                errorMsg: '',
 
 
             }
@@ -302,29 +299,21 @@
 
         methods: {
             async fetchTopics() {
-                try {
-                    this.state = new StateLoading();
-                    const token = await AccountManager.getAccessToken();
-                    let topics = await instance.get('/topic', {
-                        headers: {
-                            Authorization: token
-                        }
-                    });
 
-                    this.topics = topics.data;
+                this.state = new StateLoading();
+                const result = await getFrom('/topic');
 
-                    this.topics.forEach((topic) => {
-                        this.topicsText.push(topic.label);
-                    });
-                    this.topicsLoading = false;
-
-                    this.state = new StateContent(this.topic);
-
-                } catch (e) {
-                    debugLog(e);
+                if (result instanceof ErrorResult) {
                     this.state = new StateError("Error in connecting with server. Please try again", this.fetchTopics);
-                    this.showSnackbar("Error in connecting with server")
+                    return;
                 }
+
+                this.topics = result.content;
+
+                this.topics.forEach((topic) => {
+                    this.topicsText.push(topic.label);
+                });
+                this.state = new StateContent(this.topic);
             },
 
             /*------------------------------ observes the data change in quiz questions -------------------------- */
