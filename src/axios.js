@@ -20,6 +20,7 @@ export async function getFrom(route) {
             }
         });
 
+
         return new SuccessResult(result.data);
     } catch (e) {
         errorLog(e);

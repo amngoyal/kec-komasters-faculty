@@ -303,7 +303,9 @@
                 const result = await getFrom('/topic');
 
                 if (result instanceof ErrorResult) {
-                    this.state = new StateError("Error in connecting with server. Please try again", this.fetchTopics);
+                    this.state = new StateError({
+                        retryCallback: this.fetchTopics
+                    });
                     return;
                 }
 
@@ -312,6 +314,7 @@
                 this.topics.forEach((topic) => {
                     this.topicsText.push(topic.label);
                 });
+
                 this.state = new StateContent(this.topic);
             },
 

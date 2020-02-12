@@ -14,9 +14,9 @@ export class StateContent extends State {
 
 export class StateError extends State {
 
-    constructor(message ="Something went wrong. Please contact support", retryCallback) {
+    constructor({message, retryCallback}) {
         super();
-        this.message = message;
+        this.message = message == null ? "Something went wrong. Please try again" : message;
         this.retryCallback = retryCallback;
     }
 }

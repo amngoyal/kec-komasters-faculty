@@ -1,57 +1,62 @@
 <template>
     <div>
 
-        <v-app-bar flat>
-            <v-toolbar-title>Your Uploaded Quiz</v-toolbar-title>
-        </v-app-bar>
+        <error :state="this.state"></error>
 
-        <v-simple-table fixed-header class="px-4">
-            <template v-slot:default>
-                <thead>
-                <tr>
-                    <th class="text-left subtitle-2">Title</th>
-                    <th class="text-left subtitle-2">Topic</th>
-                    <th class="text-center subtitle-2">Duration</th>
-                    <th class="text-center subtitle-2">No. of questions</th>
-                    <th class="text-center subtitle-2">Max Score</th>
-                    <th class="text-left subtitle-2">Created At</th>
-                    <th class="text-left subtitle-2">Status</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="(item,index) in data" :key="item.id">
-                    <td><p class="primary--text underline-on-hover" v-on:click="onQuizNameClick(item.id)">
-                        {{item.title}}</p></td>
-                    <td>{{ item.topic.label }}</td>
-                    <td class="text-center">{{ item.duration }} min</td>
-                    <td class="text-center">{{ item.questionCount }}</td>
-                    <td class="text-center">{{ item.maxScore }}</td>
-                    <td>{{ item.createdAt }}</td>
-                    <td>
+        <div v-if="this.isContent">
 
-                        <v-switch color="green" v-if="item.published" v-model="item.enabled"
-                                  v-on:change="onSwitchStateChange(item.id, item.enabled,index)"
+            <v-app-bar flat>
+                <v-toolbar-title>Your Uploaded Quiz</v-toolbar-title>
+            </v-app-bar>
 
-                                  :label="item.enabled ? 'Enabled': 'Disabled'"></v-switch>
+            <v-simple-table fixed-header class="px-4">
+                <template v-slot:default>
+                    <thead>
+                    <tr>
+                        <th class="text-left subtitle-2">Title</th>
+                        <th class="text-left subtitle-2">Topic</th>
+                        <th class="text-center subtitle-2">Duration</th>
+                        <th class="text-center subtitle-2">No. of questions</th>
+                        <th class="text-center subtitle-2">Max Score</th>
+                        <th class="text-left subtitle-2">Created At</th>
+                        <th class="text-left subtitle-2">Status</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(item,index) in data" :key="item.id">
+                        <td><p class="primary--text underline-on-hover" v-on:click="onQuizNameClick(item.id)">
+                            {{item.title}}</p></td>
+                        <td>{{ item.topic.label }}</td>
+                        <td class="text-center">{{ item.duration }} min</td>
+                        <td class="text-center">{{ item.questionCount }}</td>
+                        <td class="text-center">{{ item.maxScore }}</td>
+                        <td>{{ item.createdAt }}</td>
+                        <td>
 
-                        <p class="red--text underline-on-hover" v-if="!item.published" @click="onQuizNameClick(item.id)">*Action
-                            Required*</p>
+                            <v-switch color="green" v-if="item.published" v-model="item.enabled"
+                                      v-on:change="onSwitchStateChange(item.id, item.enabled,index)"
 
-                    </td>
+                                      :label="item.enabled ? 'Enabled': 'Disabled'"></v-switch>
+
+                            <p class="red--text underline-on-hover" v-if="!item.published"
+                               @click="onQuizNameClick(item.id)">*Action
+                                Required*</p>
+
+                        </td>
 
 
-                    <td>
-                        <v-btn v-if="item.published" depressed color="#E9E8F6" class="primary--text"
-                               @click="onViewResponseButtonClick(item.id,item.title)">View
-                            Responses
-                        </v-btn>
-                    </td>
-                </tr>
-                </tbody>
-            </template>
-        </v-simple-table>
-
+                        <td>
+                            <v-btn v-if="item.published" depressed color="#E9E8F6" class="primary--text"
+                                   @click="onViewResponseButtonClick(item.id,item.title)">View
+                                Responses
+                            </v-btn>
+                        </td>
+                    </tr>
+                    </tbody>
+                </template>
+            </v-simple-table>
+        </div>
     </div>
 </template>
 
@@ -60,48 +65,29 @@
     import AccountManager from '../../models/AccountManager'
     import {debugLog, errorLog} from '../../app-config'
     import router from "../../router";
+    import {StateContent, StateError, StateLoading, StateRest} from "../../models/State";
+    import ErrorComponent from "../ErrorComponent";
 
     export default {
         name: "QuizList",
+        components: {'error': ErrorComponent},
         data() {
             return {
+                state: new StateRest(),
                 data: [],
                 limit: 10,
                 offset: 0,
                 isEnabled: [],
             }
         },
+        computed: {
+            isContent() {
+                return this.state instanceof StateContent
+            },
+        },
         async mounted() {
 
-            try {
-
-                const token = await AccountManager.getAccessToken();
-                let response = await instance.get(`/faculty/${AccountManager.user.id}/quiz?limit=${this.limit}&offset=${this.offset}`, {
-                    headers: {
-                        authorization: token
-                    }
-                });
-
-
-                response.data.forEach(item => {
-                    this.data.push({
-                        id: item.id,
-                        title: item.title,
-                        maxScore: item.maxScore,
-                        questionCount: item.questionCount,
-                        duration: item.duration,
-                        createdAt: item.createdAt,
-                        enabled: item.enabled,
-                        published: item.published,
-                        topic: item.topic,
-                        scopes: item.scopes,
-                    })
-                });
-                debugLog(response.data);
-
-            } catch (e) {
-                errorLog(e.response);
-            }
+            await this.fetchQuizList();
         },
         methods: {
             onViewResponseButtonClick(id, title) {
@@ -130,6 +116,44 @@
             },
             onQuizNameClick(id) {
                 router.push('/home/quiz/all/' + id);
+            },
+            async fetchQuizList() {
+
+                console.log('called');
+
+                try {
+
+                    this.state = new StateLoading();
+
+                    const token = await AccountManager.getAccessToken();
+                    let response = await instance.get(`/faculty/${AccountManager.user.id}/quiz?limit=${this.limit}&offset=${this.offset}`, {
+                        headers: {
+                            authorization: token
+                        }
+                    });
+
+
+                    response.data.forEach(item => {
+                        this.data.push({
+                            id: item.id,
+                            title: item.title,
+                            maxScore: item.maxScore,
+                            questionCount: item.questionCount,
+                            duration: item.duration,
+                            createdAt: item.createdAt,
+                            enabled: item.enabled,
+                            published: item.published,
+                            topic: item.topic,
+                            scopes: item.scopes,
+                        })
+                    });
+                    debugLog(response.data);
+                    this.state = new StateContent();
+
+                } catch (e) {
+                    this.state = new StateError({retryCallback: this.fetchQuizList()});
+                    errorLog(e.response);
+                }
             }
         }
     }

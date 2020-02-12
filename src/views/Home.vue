@@ -103,7 +103,7 @@
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="green darken-1" text @click="onLoginAgainButtonPress" outlined>Login Again</v-btn>
+                    <v-btn color="primary" text @click="onLoginAgainButtonPress" outlined>Login Again</v-btn>
                 </v-card-actions>
             </v-card>
 
