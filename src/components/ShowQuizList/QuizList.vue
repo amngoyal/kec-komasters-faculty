@@ -20,8 +20,9 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="item in data" :key="item.id">
-                    <td><a :href="'/home/quiz/all/'+item.id">{{item.title}}</a></td>
+                <tr v-for="(item,index) in data" :key="item.id">
+                    <td><p class="primary--text underline-on-hover" v-on:click="onQuizNameClick(item.id)">
+                        {{item.title}}</p></td>
                     <td>{{ item.topic.label }}</td>
                     <td class="text-center">{{ item.duration }} min</td>
                     <td class="text-center">{{ item.questionCount }}</td>
@@ -29,15 +30,20 @@
                     <td>{{ item.createdAt }}</td>
                     <td>
 
-                        <v-switch color="green" v-if="item.published" v-model="item.enabled" :label="item.enabled ? 'Enabled': 'Disabled'"></v-switch>
+                        <v-switch color="green" v-if="item.published" v-model="item.enabled"
+                                  v-on:change="onSwitchStateChange(item.id, item.enabled,index)"
 
-                        <a class="red--text" v-if="!item.published" :href="'/home/quiz/all/'+item.id">*Action Required*</a>
+                                  :label="item.enabled ? 'Enabled': 'Disabled'"></v-switch>
+
+                        <p class="red--text underline-on-hover" v-if="!item.published" @click="onQuizNameClick(item.id)">*Action
+                            Required*</p>
 
                     </td>
 
 
                     <td>
-                        <v-btn v-if="item.published" depressed color="#E9E8F6" class="primary--text" @click="onViewResponseButtonClick(item.id,item.title)">View
+                        <v-btn v-if="item.published" depressed color="#E9E8F6" class="primary--text"
+                               @click="onViewResponseButtonClick(item.id,item.title)">View
                             Responses
                         </v-btn>
                     </td>
@@ -53,6 +59,7 @@
     import instance from '../../axios'
     import AccountManager from '../../models/AccountManager'
     import {debugLog, errorLog} from '../../app-config'
+    import router from "../../router";
 
     export default {
         name: "QuizList",
@@ -99,11 +106,40 @@
         methods: {
             onViewResponseButtonClick(id, title) {
                 this.$router.push({path: '/home/quiz/all/responses/' + id, query: {quiz_title: title}})
+            },
+
+            async onSwitchStateChange(id, action, index) {
+
+                try {
+
+                    const token = await AccountManager.getAccessToken();
+                    const response = instance.put(`/quiz/${id}/enable?action=${action ? '1' : '0'}`, null, {
+                        headers: {
+                            authorization: token
+                        }
+                    });
+
+                    debugLog(response);
+
+                } catch (e) {
+
+                    debugLog(this.data[index].enabled);
+                    this.data[index].enabled = !this.data[index].enabled;
+                    errorLog(e);
+                }
+            },
+            onQuizNameClick(id) {
+                router.push('/home/quiz/all/' + id);
             }
         }
     }
 </script>
 
 <style scoped>
+
+    .underline-on-hover:hover {
+        text-decoration: underline;
+        cursor: pointer;
+    }
 
 </style>

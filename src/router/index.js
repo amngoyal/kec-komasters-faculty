@@ -29,11 +29,12 @@ const routes = [{
             name: "CreateQuiz",
         },
         component: Home,
-        children: [{
-            path: 'quiz/create',
-            name: 'CreateQuiz',
-            component: CreateQuiz,
-        },
+        children: [
+            {
+                path: 'quiz/create',
+                name: 'CreateQuiz',
+                component: CreateQuiz,
+            },
             {
                 path: 'quiz/all',
                 name: 'ShowAllQuiz',

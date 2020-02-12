@@ -87,6 +87,9 @@
     import ShowMSQ from "../DisplayQuestionComponents/ShowMSQ";
     import ShowFBQ from "../DisplayQuestionComponents/ShowFBQ";
     import ShowTFQ from "../DisplayQuestionComponents/ShowTFQ";
+    import instance from "../../axios";
+    import AccountManager from "../../models/AccountManager";
+    import {debugLog, errorLog} from "../../app-config";
 
     export default {
         name: "ViewQuiz",
@@ -103,7 +106,73 @@
                 quizDescription: '',
                 quizDuration: '',
                 topicsText: [],
-                topicsLoading: false,
+                questions:[],
+                readOnly: false
+            }
+        },
+        async mounted() {
+
+            try {
+
+                const token = await AccountManager.getAccessToken();
+                const res = await instance.get(`/faculty/${AccountManager.user.id}/quiz/74`, {
+                    headers: {
+                        authorization: token
+                    }
+                });
+
+                debugLog(res);
+
+                res.data.questions.forEach(item => {
+                    if (item.type === 1) {
+                        this.questions.push({
+                            question: item.statement,
+                            points: item.points,
+                            options: item.options,
+                            questionType: 'mcq',
+                            validation: true,
+                            uniqueId: item.type + this.count
+
+                        })
+                    }
+
+                    if (item.type === 2) {
+                        this.questions.push({
+                            question: item.statement,
+                            points: item.points,
+                            options: item.options,
+                            questionType: 'msq',
+                            validation: true,
+                            uniqueId: item.type + this.count
+                        })
+                    }
+
+                    if (item.type === 3) {
+                        this.questions.push({
+                            question: '',
+                            points: 0,
+                            blanks: '',
+                            questionType: 'fbq',
+                            validation: false,
+                            uniqueId: item.type + this.count
+                        })
+                    }
+
+                    if (item.type === 4) {
+                        this.questions.push({
+                            question: '',
+                            points: 0,
+                            answer: '',
+                            questionType: 'tfq',
+                            validation: false,
+                            uniqueId: item.type + this.count
+                        })
+                    }
+
+
+                })
+            } catch (e) {
+                errorLog(e)
             }
         },
         methods: {
