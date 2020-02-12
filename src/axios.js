@@ -20,13 +20,13 @@ export async function getFrom(route) {
             }
         });
 
-        return SuccessResult(result.data);
+        return new SuccessResult(result.data);
     } catch (e) {
         errorLog(e);
         if (e.response != null) {
-            return ErrorResult(e.response.status)
+            return new ErrorResult(e.response.status)
         } else {
-            return ErrorResult(500)
+            return new ErrorResult(500)
         }
     }
 }

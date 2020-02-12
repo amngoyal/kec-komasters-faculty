@@ -72,7 +72,6 @@
                                 <v-overflow-btn
                                         solo
                                         flat
-                                        :loading="topicsLoading"
                                         @input="onQuizMetaDataChange"
                                         background-color="white"
                                         v-model="quizTopic"
