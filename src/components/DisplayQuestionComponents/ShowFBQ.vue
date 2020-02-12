@@ -24,17 +24,18 @@
                 <!-------------------- Options View ---------------------->
 
 
-                <v-flex class="ml-2 mt-1" :key="index" v-for="(i,index) in options" xs12 sm8 offset-sm0>
+                <v-flex class="ml-2 mt-1" :key="i.id" v-for="(i,index) in options" xs12 sm8 offset-sm0>
 
-                    <b v-if="(index) % 3 === 0">Options for Blank {{count++}}</b>
+                    <b v-if="(index) % 3 === 0">Options for Blank {{index/3+1}}</b>
 
                     <v-textarea
                             rows="1"
                             auto-grow
-                            :background-color="options[index].isCorrect? 'green' : 'white'"
-                            v-model="options[index].text"
+                            dense
+                            :background-color="i.isCorrect? 'green' : 'white'"
+                            v-model="i.text"
                             outlined
-                            :dark="options[index].isCorrect"
+                            :dark="i.isCorrect"
                             readonly
                     >
                     </v-textarea>
@@ -56,7 +57,6 @@
         },
         data: () => {
             return {
-                count: 1,
             }
         },
 

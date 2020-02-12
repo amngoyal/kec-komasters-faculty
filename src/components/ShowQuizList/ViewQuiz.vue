@@ -75,17 +75,23 @@
 
                         <div v-if="i.questionType === 3">
                             <show-fbq :question-text="i.question" :question-number="i.position"
-                                     :options="i.options" :points="i.points"></show-fbq>
+                                      :options="i.options" :points="i.points"></show-fbq>
                         </div>
 
                         <div v-if="i.questionType === 4">
-                            <show-tfq :question-text="i.question"  :question-number="i.position"
-                                     :options="i.options" :points="i.points"></show-tfq>
+                            <show-tfq :question-text="i.question" :question-number="i.position"
+                                      :options="i.options" :points="i.points"></show-tfq>
                         </div>
 
                     </div>
                 </v-container>
+
             </v-card>
+
+            <v-layout class="mb-10">
+                <v-btn color="primary" class="half-block mr-5">Delete</v-btn>
+                <v-btn color="primary" class="half-block" depressed>Publish</v-btn>
+            </v-layout>
         </v-container>
     </div>
 </template>
@@ -147,7 +153,7 @@
                             options: item.options,
                             questionType: 1,
                             uniqueId: this.count++,
-                            position: item.position+1,
+                            position: item.position + 1,
 
                         })
                     }
@@ -161,7 +167,7 @@
                             options: item.options,
                             questionType: 2,
                             uniqueId: this.count++,
-                            position: item.position+1,
+                            position: item.position + 1,
                         })
                     }
 
@@ -172,7 +178,7 @@
                             options: item.options,
                             questionType: 3,
                             uniqueId: this.count++,
-                            position: item.position+1,
+                            position: item.position + 1,
                         })
                     }
 
@@ -184,7 +190,7 @@
                             questionType: 4,
                             options: item.options,
                             uniqueId: this.count++,
-                            position: item.position+1,
+                            position: item.position + 1,
                         })
                     }
 
@@ -202,5 +208,9 @@
 </script>
 
 <style scoped>
+
+    .half-block{
+        width: 49%;
+    }
 
 </style>

@@ -65,7 +65,7 @@
     import AccountManager from '../../models/AccountManager'
     import {debugLog, errorLog} from '../../app-config'
     import router from "../../router";
-    import {StateContent, StateError, StateLoading, StateRest} from "../../models/State";
+    import {StateContent, StateLoading, StateRest} from "../../models/State";
     import ErrorComponent from "../ErrorComponent";
 
     export default {
@@ -151,7 +151,7 @@
                     this.state = new StateContent();
 
                 } catch (e) {
-                    this.state = new StateError({retryCallback: this.fetchQuizList()});
+                   // this.state = new StateError({retryCallback: this.fetchQuizList()});
                     errorLog(e.response);
                 }
             }

@@ -30,6 +30,7 @@
                      <v-textarea
                                 rows="1"
                                 auto-grow
+                                dense
                                 :background-color="options[index].isCorrect? 'green': 'white'"
                                 v-model="options[index].text"
                                 outlined
