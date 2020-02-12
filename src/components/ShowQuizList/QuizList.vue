@@ -15,7 +15,7 @@
                     <th class="text-center subtitle-2">No. of questions</th>
                     <th class="text-center subtitle-2">Max Score</th>
                     <th class="text-left subtitle-2">Created At</th>
-                    <th class="text-center subtitle-2">Status</th>
+                    <th class="text-left subtitle-2">Status</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -27,9 +27,17 @@
                     <td class="text-center">{{ item.questionCount }}</td>
                     <td class="text-center">{{ item.maxScore }}</td>
                     <td>{{ item.createdAt }}</td>
-                    <td class="text-center">{{item.disabled?'Disabled':'Enabled'}}</td>
                     <td>
-                        <v-btn depressed class="primary" @click="onViewResponseButtonClick(item.id,item.title)">View
+
+                        <v-switch color="green" v-if="item.published" v-model="item.enabled" :label="item.enabled ? 'Enabled': 'Disabled'"></v-switch>
+
+                        <a class="red--text" v-if="!item.published" :href="'/home/quiz/all/'+item.id">*Action Required*</a>
+
+                    </td>
+
+
+                    <td>
+                        <v-btn v-if="item.published" depressed color="#E9E8F6" class="primary--text" @click="onViewResponseButtonClick(item.id,item.title)">View
                             Responses
                         </v-btn>
                     </td>
@@ -50,9 +58,10 @@
         name: "QuizList",
         data() {
             return {
-                data: '',
+                data: [],
                 limit: 10,
-                offset: 0
+                offset: 0,
+                isEnabled: [],
             }
         },
         async mounted() {
@@ -66,19 +75,21 @@
                     }
                 });
 
-                /* let response = await instance.get(`/submission/quiz/74?limit=10&offset=0`, {
-                     headers: {
-                         authorization: token
-                     }
-                 });*/
 
-                /*  let response = await instance.get(`/submission/id/101`, {
-                      headers: {
-                          authorization: token
-                      }
-                  });*/
-
-                this.data = response.data;
+                response.data.forEach(item => {
+                    this.data.push({
+                        id: item.id,
+                        title: item.title,
+                        maxScore: item.maxScore,
+                        questionCount: item.questionCount,
+                        duration: item.duration,
+                        createdAt: item.createdAt,
+                        enabled: item.enabled,
+                        published: item.published,
+                        topic: item.topic,
+                        scopes: item.scopes,
+                    })
+                });
                 debugLog(response.data);
 
             } catch (e) {
