@@ -2,10 +2,45 @@
     <v-container>
         <v-card flat outlined>
 
+            <!------------------------ Question and points obtained ------------------>
             <v-container>
+                <v-layout>
+                    <p class="ml-1">Question: {{questionNumber}}</p>
+                    <v-spacer/>
+                    <p class="mr-5">Points:
+                        {{points}}</p>
+                </v-layout>
+
+                <v-textarea
+                        rows="1"
+                        auto-grow
+                        label="Question"
+                        v-model="questionText"
+                        outlined
+                        readonly
+                ></v-textarea>
+
+
+                <!-------------------- Options View ---------------------->
+
+
+                <v-flex class="ml-2 mt-1" :key="index" v-for="(i,index) in options" xs12 sm8 offset-sm0>
+
+                    <b v-if="(index) % 3 === 0">Options for Blank {{count++}}</b>
+
+                    <v-textarea
+                            rows="1"
+                            auto-grow
+                            :background-color="options[index].isCorrect? 'green' : 'white'"
+                            v-model="options[index].text"
+                            outlined
+                            :dark="options[index].isCorrect"
+                            readonly
+                    >
+                    </v-textarea>
+                </v-flex>
 
             </v-container>
-
         </v-card>
     </v-container>
 
@@ -21,21 +56,11 @@
         },
         data: () => {
             return {
-                correct: '',
+                count: 1,
             }
         },
 
-        methods: {
-            optionBackgroundColor(index) {
-
-                if (this.correctOptionIndex === index) {
-                    return 'green'
-                }
-
-
-            }
-
-        }
+        methods: {}
 
     }
 </script>

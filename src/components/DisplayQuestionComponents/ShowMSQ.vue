@@ -7,12 +7,13 @@
                 <v-layout>
                     <p class="ml-1">Question {{questionNumber}}</p>
                     <v-spacer/>
-                    <p class="mr-5" >Points: {{points}}</p>
+                    <p class="mr-5">Points: {{points}}</p>
                 </v-layout>
 
                 <v-textarea
                         rows="1"
                         auto-grow
+                        label="Question"
                         v-model="questionText"
                         outlined
                         readonly
@@ -27,10 +28,10 @@
                         <v-textarea
                                 rows="1"
                                 auto-grow
-                                :background-color="optionBackgroundColor(index)"
-                                v-model="options[index]"
+                                :background-color="options[index].isCorrect? 'green': 'white'"
+                                v-model="options[index].text"
                                 outlined
-                                :dark="!!optionBackgroundColor(index)"
+                                :dark="options[index].isCorrect"
                                 readonly
                         >
                         </v-textarea>
@@ -51,23 +52,11 @@
             questionText: String,
             points: Number,
             options: Array,
-            correctOptionIndex: Array
         },
         data: () => {
-            return {
-
-            }
+            return {}
         },
-        methods: {
-            optionBackgroundColor(index) {
-
-                if (this.correctOptionIndex[index] === index) {
-                    return 'green'
-                }
-
-            }
-
-        }
+        methods: {}
 
     }
 </script>

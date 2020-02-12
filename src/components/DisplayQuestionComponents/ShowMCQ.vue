@@ -14,6 +14,7 @@
                 <v-textarea
                         rows="1"
                         auto-grow
+                        label="Question"
                         v-model="questionText"
                         outlined
                         readonly
@@ -28,10 +29,10 @@
                         <v-textarea
                                 rows="1"
                                 auto-grow
-                                :background-color="optionBackgroundColor(index)"
-                                v-model="options[index]"
+                                :background-color="options[index].isCorrect? 'green': 'white'"
+                                v-model="options[index].text"
                                 outlined
-                                :dark="!!optionBackgroundColor(index)"
+                                :dark="options[index].isCorrect"
                                 readonly
                         >
                         </v-textarea>
@@ -51,26 +52,13 @@
             questionNumber: Number,
             questionText: String,
             points: Number,
-            selectedOptionIndex: Number,
             options: Array,
-            correctOptionIndex: Number
         },
         data: () => {
-            return {
-            }
+            return {}
         },
 
-        methods: {
-            optionBackgroundColor(index) {
-
-                if (this.correctOptionIndex === index) {
-                    return 'green'
-                }
-
-
-            }
-
-        }
+        methods: {}
 
     }
 </script>

@@ -64,22 +64,23 @@
                     <div v-for="(i) in questions" :key="i.uniqueId">
 
                         <div v-if="i.questionType === 1">
-                            <show-mcq :question-text="i.question" :options="i.optionsText" :question-number="i.position"
-                                      :correct-option-index="i.correctOptionIndex" :points="i.points"></show-mcq>
+                            <show-mcq :question-text="i.question" :options="i.options" :question-number="i.position"
+                                      :points="i.points"></show-mcq>
                         </div>
 
                         <div v-if="i.questionType === 2">
-                            <show-msq :question-text="i.question" :options="i.optionsText" :question-number="i.position"
-                                      :correct-option-index="i.correctOptionIndex" :points="i.points"></show-msq>
+                            <show-msq :question-text="i.question" :options="i.options" :question-number="i.position"
+                                      :points="i.points"></show-msq>
                         </div>
 
                         <div v-if="i.questionType === 3">
-                            <show-fbq></show-fbq>
+                            <show-fbq :question-text="i.question" :question-number="i.position"
+                                     :options="i.options" :points="i.points"></show-fbq>
                         </div>
 
                         <div v-if="i.questionType === 4">
                             <show-tfq :question-text="i.question"  :question-number="i.position"
-                                      :correct-option-index="i.correctOptionIndex" :points="i.points"></show-tfq>
+                                     :options="i.options" :points="i.points"></show-tfq>
                         </div>
 
                     </div>
@@ -140,22 +141,11 @@
                 res.data.questions.forEach(item => {
                     if (item.type === 1) {
 
-                        const optionsText = [];
-                        let correctOption = 0;
-
-                        item.options.forEach((item, index) => {
-                            optionsText.push(item.text);
-                            if (item.isCorrect)
-                                correctOption = index;
-                        });
-
                         this.questions.push({
                             question: item.statement,
                             points: item.points,
-                            optionsText: optionsText,
-                            correctOptionIndex: correctOption,
+                            options: item.options,
                             questionType: 1,
-                            validation: true,
                             uniqueId: this.count++,
                             position: item.position+1,
 
@@ -164,22 +154,12 @@
 
                     if (item.type === 2) {
 
-                        const optionsText = [];
-                        let correctOption = [];
-
-                        item.options.forEach((item, index) => {
-                            optionsText.push(item.text);
-                            if (item.isCorrect)
-                                correctOption.push(index);
-                        });
 
                         this.questions.push({
                             question: item.statement,
                             points: item.points,
-                            optionsText: optionsText,
-                            correctOptionIndex: correctOption,
+                            options: item.options,
                             questionType: 2,
-                            validation: true,
                             uniqueId: this.count++,
                             position: item.position+1,
                         })
@@ -187,11 +167,10 @@
 
                     if (item.type === 3) {
                         this.questions.push({
-                            question: '',
-                            points: 0,
-                            blanks: '',
+                            question: item.statement,
+                            points: item.points,
+                            options: item.options,
                             questionType: 3,
-                            validation: true,
                             uniqueId: this.count++,
                             position: item.position+1,
                         })
@@ -202,9 +181,8 @@
                         this.questions.push({
                             question: item.statement,
                             points: item.points,
-                            correctOptionIndex: item.options[0].isCorrect ? 0 : 1,
                             questionType: 4,
-                            validation: true,
+                            options: item.options,
                             uniqueId: this.count++,
                             position: item.position+1,
                         })
