@@ -51,7 +51,7 @@
             questionText: String,
             points: Number,
             options: Array,
-            correctOptionIndex: Number
+            correctOptionIndex: Array
         },
         data: () => {
             return {
@@ -61,10 +61,9 @@
         methods: {
             optionBackgroundColor(index) {
 
-                if (this.correctOptionIndex === index) {
+                if (this.correctOptionIndex[index] === index) {
                     return 'green'
                 }
-
 
             }
 

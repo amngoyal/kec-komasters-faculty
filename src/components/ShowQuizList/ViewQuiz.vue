@@ -16,11 +16,10 @@
                     <v-textarea
                             rows="1"
                             auto-grow
-                            :hint="(quizTitle.length < 10)?'Title should be greater than 10 characters.' : ''"
-                            @input="onQuizMetaDataChange"
+                            label="Title"
                             v-model="quizTitle"
-                            @keydown="$event.keyCode === 32 && quizTitle.length === 0 ? $event.preventDefault() : false"
                             placeholder="quiz_title"
+                            readonly
                             background-color="white"
                             outlined>
 
@@ -29,10 +28,9 @@
                     <v-textarea
                             rows="1"
                             auto-grow
-                            :hint="(quizDescription.length < 10)?'Description should be greater than 10 characters.' : ''"
-                            @input="onQuizMetaDataChange"
                             v-model="quizDescription"
-                            @keydown="$event.keyCode === 32 && quizDescription.length === 0 ? $event.preventDefault() : false"
+                            readonly
+                            label="Quiz Description"
                             placeholder="quiz_Description"
                             background-color="white"
                             outlined>
@@ -41,40 +39,50 @@
 
                     <v-text-field
                             v-model="quizDuration"
-                            @input="onQuizMetaDataChange"
-                            @keydown="$event.keyCode === 110 || $event.keyCode === 109 ||  $event.keyCode === 107 || $event.keyCode === 190 || $event.keyCode === 69  ? $event.preventDefault() : false"
                             placeholder="quiz_duration"
                             type="number"
+                            readonly
+                            label="Quiz Duration"
                             background-color="white"
                             outlined>
 
                     </v-text-field>
 
-                    <v-overflow-btn
-                            solo
-                            flat
-                            :loading="topicsLoading"
-                            @input="onQuizMetaDataChange"
-                            background-color="white"
+                    <v-text-field
                             v-model="quizTopic"
-                            :items="topicsText"
+                            placeholder="quiz_topic"
+                            readonly
                             label="Topic"
-                    ></v-overflow-btn>
+                            background-color="white"
+                            outlined>
+
+                    </v-text-field>
+
 
                     <strong>Questions:</strong>
 
-                    <show-mcq :question-text="'Question'" :options="['a','b','c']" :question-number="1"
-                              :correct-option-index="2" :points="4"></show-mcq>
+                    <div v-for="(i) in questions" :key="i.uniqueId">
 
-                    <show-msq :question-text="'Question'" :options="['a','b','c']" :question-number="1"
-                              :correct-option-index="2" :points="4"></show-msq>
+                        <div v-if="i.questionType === 1">
+                            <show-mcq :question-text="i.question" :options="i.optionsText" :question-number="i.position"
+                                      :correct-option-index="i.correctOptionIndex" :points="i.points"></show-mcq>
+                        </div>
 
-                    <show-tfq :question-text="'Question'" :question-number="1"
-                              :correct-option-index="1" :points="4"></show-tfq>
+                        <div v-if="i.questionType === 2">
+                            <show-msq :question-text="i.question" :options="i.optionsText" :question-number="i.position"
+                                      :correct-option-index="i.correctOptionIndex" :points="i.points"></show-msq>
+                        </div>
 
-                    <show-fbq :question-text="'Question'" :options="['a','b','c']" :question-number="1"
-                              :correct-option-index="2" :points="4"></show-fbq>
+                        <div v-if="i.questionType === 3">
+                            <show-fbq></show-fbq>
+                        </div>
 
+                        <div v-if="i.questionType === 4">
+                            <show-tfq :question-text="i.question"  :question-number="i.position"
+                                      :correct-option-index="i.correctOptionIndex" :points="i.points"></show-tfq>
+                        </div>
+
+                    </div>
                 </v-container>
             </v-card>
         </v-container>
@@ -106,8 +114,9 @@
                 quizDescription: '',
                 quizDuration: '',
                 topicsText: [],
-                questions:[],
-                readOnly: false
+                questions: [],
+                readOnly: false,
+                count: 0,
             }
         },
         async mounted() {
@@ -123,27 +132,56 @@
 
                 debugLog(res);
 
+                this.quizTitle = res.data.title;
+                this.quizDescription = res.data.description;
+                this.quizDuration = res.data.duration;
+                this.quizTopic = res.data.topic.label;
+
                 res.data.questions.forEach(item => {
                     if (item.type === 1) {
+
+                        const optionsText = [];
+                        let correctOption = 0;
+
+                        item.options.forEach((item, index) => {
+                            optionsText.push(item.text);
+                            if (item.isCorrect)
+                                correctOption = index;
+                        });
+
                         this.questions.push({
                             question: item.statement,
                             points: item.points,
-                            options: item.options,
-                            questionType: 'mcq',
+                            optionsText: optionsText,
+                            correctOptionIndex: correctOption,
+                            questionType: 1,
                             validation: true,
-                            uniqueId: item.type + this.count
+                            uniqueId: this.count++,
+                            position: item.position+1,
 
                         })
                     }
 
                     if (item.type === 2) {
+
+                        const optionsText = [];
+                        let correctOption = [];
+
+                        item.options.forEach((item, index) => {
+                            optionsText.push(item.text);
+                            if (item.isCorrect)
+                                correctOption.push(index);
+                        });
+
                         this.questions.push({
                             question: item.statement,
                             points: item.points,
-                            options: item.options,
-                            questionType: 'msq',
+                            optionsText: optionsText,
+                            correctOptionIndex: correctOption,
+                            questionType: 2,
                             validation: true,
-                            uniqueId: item.type + this.count
+                            uniqueId: this.count++,
+                            position: item.position+1,
                         })
                     }
 
@@ -152,23 +190,25 @@
                             question: '',
                             points: 0,
                             blanks: '',
-                            questionType: 'fbq',
-                            validation: false,
-                            uniqueId: item.type + this.count
+                            questionType: 3,
+                            validation: true,
+                            uniqueId: this.count++,
+                            position: item.position+1,
                         })
                     }
 
                     if (item.type === 4) {
+
                         this.questions.push({
-                            question: '',
-                            points: 0,
-                            answer: '',
-                            questionType: 'tfq',
-                            validation: false,
-                            uniqueId: item.type + this.count
+                            question: item.statement,
+                            points: item.points,
+                            correctOptionIndex: item.options[0].isCorrect ? 0 : 1,
+                            questionType: 4,
+                            validation: true,
+                            uniqueId: this.count++,
+                            position: item.position+1,
                         })
                     }
-
 
                 })
             } catch (e) {

@@ -88,32 +88,34 @@
         </v-flex>
     </v-layout>
 </template>
+
 <script>
-    import MultiSelect from './Questions/MultiSelectQuestion'
-    import MCQ from './Questions/MultipleChoiceQuestion'
-    import FillBlanks from './Questions/FillBlanksQuestion'
-    import TrueFalse from './Questions/TrueFalse'
+    import MultiSelect from '../EditQuiz/Questions/EditMultiSelectQuestion'
+    import MCQ from '../EditQuiz/Questions/EditMultipleChoiceQuestion'
+    import FillBlanks from '../Questions/FillBlanksQuestion'
+    import TrueFalse from '../EditQuiz/Questions/EditTrueFalse'
 
     export default {
 
-        props: {Questions: Array},
+        props: {},
         data: () => {
             return {
                 questionCategories: [{
                     title: 'Multiple Choice question',
-                    id: 'mcq'
+                    id: 1
                 }, {
                     title: 'Multi Select Question',
-                    id: 'msq'
+                    id: 2
                 }, {
                     title: 'True False',
-                    id: 'tfq'
+                    id: 4
                 }, {
                     title: 'Fill In The Blank',
-                    id: 'fbq'
+                    id: 3
                 }],
                 quizValidation: false,
                 count: 0,
+                questions: []
             }
         },
         components: {
@@ -122,16 +124,18 @@
             'fill-blanks': FillBlanks,
             'true-false': TrueFalse,
         },
+        mounted() {
+
+        },
         methods: {
             addQuestion(questionType) {
                 this.count++;
 
-                if (questionType === 'mcq') {
+                if (questionType === 1) {
                     this.questions.push({
                         question: '',
                         points: 0,
                         options: '',
-                        answer: '',
                         questionType: 'mcq',
                         validation: false,
                         uniqueId: questionType + this.count
@@ -139,7 +143,7 @@
                     })
                 }
 
-                if (questionType === 'msq') {
+                if (questionType === 2) {
                     this.questions.push({
                         question: '',
                         options: '',
@@ -150,7 +154,18 @@
                     })
                 }
 
-                if (questionType === 'tfq') {
+                if (questionType === 3) {
+                    this.questions.push({
+                        question: '',
+                        points: 0,
+                        blanks: '',
+                        questionType: 'fbq',
+                        validation: false,
+                        uniqueId: questionType + this.count
+                    })
+                }
+
+                if (questionType === 4) {
                     this.questions.push({
                         question: '',
                         points: 0,
@@ -161,16 +176,6 @@
                     })
                 }
 
-                if (questionType === 'fbq') {
-                    this.questions.push({
-                        question: '',
-                        points: 0,
-                        blanks: '',
-                        questionType: 'fbq',
-                        validation: false,
-                        uniqueId: questionType + this.count
-                    })
-                }
 
                 this.onDataChange()
             },

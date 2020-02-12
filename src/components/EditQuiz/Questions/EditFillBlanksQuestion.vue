@@ -1,5 +1,4 @@
 <template>
-
     <v-app>
         <v-container>
 
@@ -77,22 +76,19 @@
                                                     </v-radio-group>
 
                                                     <v-layout>
-
                                                         <v-spacer></v-spacer>
-
                                                         <v-btn v-if="index === (blanks.length-1)"
                                                                class="ma-5 accent ml-2" dark
                                                                @click="cancelButton(index)">
                                                             {{(blanks[index].options[0] !== ''
-                                                            || blanks[index].options[1] !== '')? 'Remove' :
+                                                            || blanks[index].options[1] !== ''
+                                                            || blanks[index].options[2] !== '')? 'Remove' :
                                                             'Cancel'}}
                                                         </v-btn>
-
                                                         <v-btn class="ma-5 accent ml-2" dark
                                                                v-on:click="done(index)">
                                                             Done
                                                         </v-btn>
-
                                                     </v-layout>
                                                 </v-container>
                                             </v-card>
@@ -107,7 +103,6 @@
 
                                         <!------------------ this is to show the correct answer of each blank ---------->
                                         <div v-for="(item,i) in blanks" :key="i" class="mt-2 ml-2">
-
                                         <span v-if="blanks[i].index === (index) && blanks[i].options[blanks[i].answer] !== ''"><strong>Answer:</strong>
                                             {{ blanks[i].options[blanks[i].answer]}}</span>
                                         </div>
@@ -150,7 +145,7 @@
             </v-card>
 
 
-            <!----------------------- Snackbar ------------------------------>
+            <!----------------------- Sanackbar ------------------------------>
             <v-snackbar
                     v-model="snackbar"
             >
@@ -184,7 +179,7 @@
                 blanks: [{
                     index: 0,
                     answer: 0,
-                    options: ["", ""]
+                    options: ["", "", ""]
                 }],
 
                 numberOfBlanks: 1,
@@ -220,28 +215,27 @@
                     this.blanks.push({
                         index: this.numberOfBlanks - 1,
                         answer: 0,
-                        options: ["", ""]
+                        options: ["", "", ""]
                     });
                     this.baseStyles.push({
                         color: '#ccc'
                     });
                     this.textFieldBgColor.push("#ccc")
                 } else {
-
                     //index is for this function call from done button
                     if (index === undefined) {
                         this.snackbarText = "Please enter the values of previous blank first...";
                         this.snackbar = true
                     }
-
                 }
                 this.onDataChange()
             },
             done(index) {
                 this.blanks[index].options[0] = this.blanks[index].options[0].trim();
                 this.blanks[index].options[1] = this.blanks[index].options[1].trim();
+                this.blanks[index].options[2] = this.blanks[index].options[2].trim();
 
-                if (this.blanks[index].options[0] !== '' && this.blanks[index].options[1] !== '') {
+                if (this.blanks[index].options[0] !== '' && this.blanks[index].options[1] !== '' && this.blanks[index].options[2] !== '') {
                     this.fbText[(2 * index + 1)] = '________';
                     this.menu.splice(index, 1);
                     this.baseStyles[index] = {
@@ -255,9 +249,8 @@
 
                 this.onDataChange()
             },
-
             cancelButton(index) {
-                this.blanks[index].options = ["", ""];
+                this.blanks[index].options = ["", "", ""];
                 this.fbText[2 * index + 1] = '';
                 this.menu.splice(index, 1);
                 this.baseStyles[index] = {
@@ -265,7 +258,6 @@
                 };
                 this.onDataChange()
             },
-
             removeBlank(index) {
                 this.blanks.splice(index, 1);
                 this.numberOfBlanks--;
@@ -285,7 +277,6 @@
                 }
                 this.onDataChange()
             },
-
             onDataChange() {
 
                 this.updateQuestionText();
