@@ -1,19 +1,16 @@
 <template>
     <div>
 
-        <error :state="this.state"></error>
+        <v-app-bar>
+            <v-app-bar-nav-icon>
+                <v-btn icon to="/home/quiz/all/quiz-list">
+                    <v-icon>mdi-arrow-left</v-icon>
+                </v-btn>
+            </v-app-bar-nav-icon>
+            <v-toolbar-title>{{this.$route.query.quiz_title}}</v-toolbar-title>
+            <v-spacer/>
 
-        <div v-if="this.isContent">
-
-            <v-app-bar>
-                <v-app-bar-nav-icon>
-                    <v-btn icon to="/home/quiz/all/quiz-list">
-                        <v-icon>mdi-arrow-left</v-icon>
-                    </v-btn>
-                </v-app-bar-nav-icon>
-                <v-toolbar-title>{{this.$route.query.quiz_title}}</v-toolbar-title>
-                <v-spacer/>
-
+            <div v-if="isAnySubmission">
                 <v-btn color="primary" @click="fetchResponseList()" tile depressed class="mr-12">
                     <v-icon class="mr-2">mdi-refresh</v-icon>
                     Refresh
@@ -22,8 +19,14 @@
                 <v-btn outlined @click="this.downloadReport">
                     <a id="download">Export Excel File</a>
                 </v-btn>
+            </div>
 
-            </v-app-bar>
+        </v-app-bar>
+
+        <error :state="this.state"></error>
+
+        <div v-if="this.isContent">
+
 
             <v-simple-table fixed-header>
                 <template v-slot:default>
@@ -53,7 +56,7 @@
                         <td class="text-center">{{item.percentage}}</td>
                         <td>{{item.submittedAt}}</td>
                         <td>
-                            <v-btn class="primary" depressed
+                            <v-btn class="primary--text" depressed color="#E9E8F6"
                                    @click="onViewReportButtonClick(item.id,item.name,item.kecId)">
                                 View Report
                             </v-btn>
@@ -87,6 +90,7 @@
                 limit: 10,
                 offset: 0,
                 state: new StateRest(),
+                isAnySubmission: false
             }
         },
         computed: {
@@ -175,11 +179,21 @@
                     });
 
                     this.state = new StateContent();
+                    this.isAnySubmission = true;
                     debugLog(response)
 
                 } catch (e) {
-                    this.state = new StateError({retryCallback: this.fetchResponseList});
-                    errorLog(e.response)
+                    errorLog(e);
+                    if (e.response) {
+                        if (e.response.status === 404) {
+                            this.state = new StateError({
+                                message: "No submissions yet!!",
+                                retryCallback: this.fetchResponseList
+                            });
+                        }
+                    } else
+                        this.state = new StateError({retryCallback: this.fetchResponseList});
+
                 }
             }
         }
