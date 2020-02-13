@@ -274,8 +274,9 @@
                     this.quizTopic = res.data.topic.label;
                     this.published = res.data.published;
                     this.quizId = res.data.id;
-                    res.data.scopes.forEach(item=>{
-                       this.quizScopes += item.label+ ", "
+                    res.data.scopes.forEach((item, index) => {
+                        console.log(res.data.scopes.length - 1, index);
+                        this.quizScopes += item.label + ((index === res.data.scopes.length - 1) ? "" : ", ");
                     });
 
                     res.data.questions.forEach(item => {
