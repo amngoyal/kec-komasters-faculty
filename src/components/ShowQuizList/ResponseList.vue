@@ -14,6 +14,11 @@
                 <v-toolbar-title>{{this.$route.query.quiz_title}}</v-toolbar-title>
                 <v-spacer/>
 
+                <v-btn color="primary" @click="fetchResponseList()" tile depressed class="mr-12">
+                    <v-icon class="mr-2">mdi-refresh</v-icon>
+                    Refresh
+                </v-btn>
+
                 <v-btn outlined @click="this.downloadReport">
                     <a id="download">Export Excel File</a>
                 </v-btn>
@@ -26,9 +31,9 @@
                     <tr>
                         <th class="text-left subtitle-2">KecId</th>
                         <th class="text-left subtitle-2">Name</th>
-                        <th class="text-left subtitle-2">Year</th>
-                        <th class="text-left subtitle-2">Branch</th>
-                        <th class="text-left subtitle-2">Section</th>
+                        <th class="text-center subtitle-2">Year</th>
+                        <th class="text-center subtitle-2">Branch</th>
+                        <th class="text-center subtitle-2">Section</th>
                         <th class="text-center subtitle-2">Correct Questions</th>
                         <th class="text-center subtitle-2">Score Obtained</th>
                         <th class="text-center subtitle-2">Percentage</th>
@@ -48,7 +53,7 @@
                         <td class="text-center">{{item.percentage}}</td>
                         <td>{{item.submittedAt}}</td>
                         <td>
-                            <v-btn class="primary"
+                            <v-btn class="primary" depressed
                                    @click="onViewReportButtonClick(item.id,item.name,item.kecId)">
                                 View Report
                             </v-btn>
@@ -134,6 +139,9 @@
             },
 
             async fetchResponseList() {
+
+                this.submissionList = [];
+
                 try {
 
                     this.state = new StateLoading();
@@ -162,7 +170,7 @@
                             percentage: parseFloat(((item.score * 100) / item.quiz.maxScore)).toFixed(1),
                             maxScore: item.quiz.maxScore,
                             questionCount: item.quiz.questionCount,
-                            submittedAt: date.toString().substring(0, date.toString().length - 30),
+                            submittedAt: date.toUTCString().substring(0, date.toUTCString().length - 3),
                         })
                     });
 

@@ -29,7 +29,7 @@
                         <td>{{index+1 }}</td>
                         <td><p class="primary--text underline-on-hover" v-on:click="onQuizNameClick(item.id)">
                             {{item.title}}</p></td>
-                        <td>{{ item.topic.label }}</td>
+                        <td>{{ item.topic }}</td>
                         <td class="text-center">{{ item.duration }} min</td>
                         <td class="text-center">{{ item.questionCount }}</td>
                         <td class="text-center">{{ item.maxScore }}</td>
@@ -143,7 +143,7 @@
                             createdAt: item.createdAt,
                             enabled: item.enabled,
                             published: item.published,
-                            topic: item.topic,
+                            topic: item.topic.label,
                             scopes: item.scopes,
                         })
                     });
@@ -151,7 +151,7 @@
                     this.state = new StateContent();
 
                 } catch (e) {
-                    errorLog(e.response);
+                    errorLog(e);
                     this.state = new StateError({retryCallback: this.fetchQuizList});
                 }
             }

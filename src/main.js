@@ -9,8 +9,6 @@ import excel from 'vue-excel-export';
 Vue.use(excel);
 
 import 'bootstrap/dist/css/bootstrap.css'
-
-
 import {BFormCheckboxGroup} from 'bootstrap-vue'
 
 Vue.component('b-form-checkbox-group', BFormCheckboxGroup);
