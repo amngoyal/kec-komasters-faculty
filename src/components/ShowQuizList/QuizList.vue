@@ -77,7 +77,7 @@
             return {
                 state: new StateRest(),
                 data: [],
-                limit: 10,
+                limit: 50,
                 offset: 0,
                 isEnabled: [],
 
