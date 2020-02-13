@@ -1,13 +1,20 @@
 <template>
     <div>
 
+        <v-app-bar flat>
+            <v-toolbar-title>Your Uploaded Quiz</v-toolbar-title>
+
+            <v-spacer/>
+
+            <v-btn depressed tile color="primary" v-if="isQuiz">
+                <v-icon class="mr-1">mdi-refresh</v-icon>Refresh</v-btn>
+
+        </v-app-bar>
+
         <error :state="this.state"></error>
 
         <div v-if="this.isContent">
 
-            <v-app-bar flat>
-                <v-toolbar-title>Your Uploaded Quiz</v-toolbar-title>
-            </v-app-bar>
 
             <v-simple-table fixed-header class="px-4">
                 <template v-slot:default>
@@ -80,6 +87,7 @@
                 limit: 50,
                 offset: 0,
                 isEnabled: [],
+                isQuiz: false
 
             }
         },
@@ -121,6 +129,8 @@
             },
             async fetchQuizList() {
 
+                this.data = [];
+
                 try {
 
                     this.state = new StateLoading();
@@ -149,10 +159,12 @@
                     });
                     debugLog(response.data);
                     this.state = new StateContent();
+                    this.isQuiz = true;
 
                 } catch (e) {
                     errorLog(e);
                     this.state = new StateError({retryCallback: this.fetchQuizList});
+                    this.isQuiz = false;
                 }
             }
         }

@@ -1,7 +1,7 @@
 <template>
     <div>
 
-        <v-app-bar>
+        <v-app-bar flat>
             <v-app-bar-nav-icon>
                 <v-btn icon to="/home/quiz/all/quiz-list">
                     <v-icon>mdi-arrow-left</v-icon>
@@ -10,15 +10,17 @@
             <v-toolbar-title>{{this.$route.query.quiz_title}}</v-toolbar-title>
             <v-spacer/>
 
-            <div v-if="isAnySubmission">
-                <v-btn color="primary" @click="fetchResponseList()" tile depressed class="mr-12">
-                    <v-icon class="mr-2">mdi-refresh</v-icon>
+            <div v-if="isSubmission">
+
+                <v-btn class="mr-12" outlined @click="this.downloadReport">
+                    <a id="download">Export Excel File</a>
+                </v-btn>
+
+                <v-btn color="primary" @click="fetchResponseList()" tile depressed >
+                    <v-icon class="mr-1">mdi-refresh</v-icon>
                     Refresh
                 </v-btn>
 
-                <v-btn outlined @click="this.downloadReport">
-                    <a id="download">Export Excel File</a>
-                </v-btn>
             </div>
 
         </v-app-bar>
@@ -90,7 +92,7 @@
                 limit: 10,
                 offset: 0,
                 state: new StateRest(),
-                isAnySubmission: false
+                isSubmission: false
             }
         },
         computed: {
@@ -179,7 +181,7 @@
                     });
 
                     this.state = new StateContent();
-                    this.isAnySubmission = true;
+                    this.isSubmission = true;
                     debugLog(response)
 
                 } catch (e) {
