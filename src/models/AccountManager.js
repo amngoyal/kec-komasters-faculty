@@ -51,7 +51,6 @@ class AccountManager {
             await this.getNewAccessToken()
         }
 
-        await this.getNewAccessToken();
         return this.accessToken;
     }
 

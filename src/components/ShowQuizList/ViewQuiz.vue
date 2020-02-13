@@ -6,7 +6,7 @@
                     <v-icon>mdi-arrow-left</v-icon>
                 </v-btn>
             </v-app-bar-nav-icon>
-            <v-toolbar-title></v-toolbar-title>
+            <v-toolbar-title>{{quizTitle}}</v-toolbar-title>
         </v-app-bar>
 
         <v-container>
@@ -16,6 +16,7 @@
                     <v-textarea
                             rows="1"
                             auto-grow
+                            dense
                             label="Title"
                             v-model="quizTitle"
                             placeholder="quiz_title"
@@ -30,6 +31,7 @@
                             auto-grow
                             v-model="quizDescription"
                             readonly
+                            dense
                             label="Quiz Description"
                             placeholder="quiz_Description"
                             background-color="white"
@@ -41,6 +43,7 @@
                             v-model="quizDuration"
                             placeholder="quiz_duration"
                             type="number"
+                            dense
                             readonly
                             label="Quiz Duration"
                             background-color="white"
@@ -52,6 +55,7 @@
                             v-model="quizTopic"
                             placeholder="quiz_topic"
                             readonly
+                            dense
                             label="Topic"
                             background-color="white"
                             outlined>
@@ -88,9 +92,9 @@
 
             </v-card>
 
-            <v-layout class="mb-10">
-                <v-btn color="primary" class="half-block mr-5">Delete</v-btn>
-                <v-btn color="primary" class="half-block" depressed>Publish</v-btn>
+            <v-layout class="mb-10" v-if="!published">
+                <v-btn  color="primary" class="half-block mr-5" @click="onDeleteButtonCLick">Delete</v-btn>
+                <v-btn color="primary" class="half-block" depressed @click="onPublishButtonCLick">Publish</v-btn>
             </v-layout>
         </v-container>
     </div>
@@ -107,6 +111,7 @@
     import {debugLog, errorLog} from "../../app-config";
 
     export default {
+        props: ['quiz_id'],
         name: "ViewQuiz",
         components: {
             'show-mcq': ShowMCQ,
@@ -117,6 +122,8 @@
         data() {
             return {
                 quizTitle: '',
+                quizId: '',
+                published: '',
                 quizTopic: '',
                 quizDescription: '',
                 quizDuration: '',
@@ -131,7 +138,7 @@
             try {
 
                 const token = await AccountManager.getAccessToken();
-                const res = await instance.get(`/faculty/${AccountManager.user.id}/quiz/74`, {
+                const res = await instance.get(`/faculty/${AccountManager.user.id}/quiz/${this.quiz_id}`, {
                     headers: {
                         authorization: token
                     }
@@ -143,6 +150,8 @@
                 this.quizDescription = res.data.description;
                 this.quizDuration = res.data.duration;
                 this.quizTopic = res.data.topic.label;
+                this.published = res.data.published;
+                this.quizId = res.data.id;
 
                 res.data.questions.forEach(item => {
                     if (item.type === 1) {
@@ -200,8 +209,34 @@
             }
         },
         methods: {
-            onQuizMetaDataChange() {
+            async onPublishButtonCLick() {
+                try {
+                    const token = await AccountManager.getAccessToken();
+                    let res = await instance.put(`/quiz/${this.quizId}/publish`, null, {
+                        headers: {
+                            authorization: token
+                        }
+                    });
 
+                    debugLog(res)
+                } catch (e) {
+                    errorLog(e)
+                }
+            },
+            async onDeleteButtonCLick() {
+                try {
+                    const token = await AccountManager.getAccessToken();
+                    debugLog(token);
+                    let res = await instance.delete(`/quiz/${this.quizId}/`, {
+                        headers: {
+                            authorization: token
+                        }
+                    });
+
+                    debugLog(res)
+                } catch (e) {
+                    errorLog(e);
+                }
             }
         }
     }
@@ -209,7 +244,7 @@
 
 <style scoped>
 
-    .half-block{
+    .half-block {
         width: 49%;
     }
 

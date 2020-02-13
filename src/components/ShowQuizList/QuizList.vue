@@ -65,7 +65,7 @@
     import AccountManager from '../../models/AccountManager'
     import {debugLog, errorLog} from '../../app-config'
     import router from "../../router";
-    import {StateContent, StateLoading, StateRest} from "../../models/State";
+    import {StateContent, StateError, StateLoading, StateRest} from "../../models/State";
     import ErrorComponent from "../ErrorComponent";
 
     export default {
@@ -86,7 +86,6 @@
             },
         },
         async mounted() {
-
             await this.fetchQuizList();
         },
         methods: {
@@ -99,7 +98,7 @@
                 try {
 
                     const token = await AccountManager.getAccessToken();
-                    const response = instance.put(`/quiz/${id}/enable?action=${action ? '1' : '0'}`, null, {
+                    const response = await instance.put(`/quiz/${id}/enable?action=${action ? '1' : '0'}`, null, {
                         headers: {
                             authorization: token
                         }
@@ -118,8 +117,6 @@
                 router.push('/home/quiz/all/' + id);
             },
             async fetchQuizList() {
-
-                console.log('called');
 
                 try {
 
@@ -151,8 +148,8 @@
                     this.state = new StateContent();
 
                 } catch (e) {
-                   // this.state = new StateError({retryCallback: this.fetchQuizList()});
                     errorLog(e.response);
+                    this.state = new StateError({retryCallback: this.fetchQuizList});
                 }
             }
         }
