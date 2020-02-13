@@ -13,6 +13,7 @@
                 <template v-slot:default>
                     <thead>
                     <tr>
+                        <th class="text-left subtitle-2">S.no</th>
                         <th class="text-left subtitle-2">Title</th>
                         <th class="text-left subtitle-2">Topic</th>
                         <th class="text-center subtitle-2">Duration</th>
@@ -25,6 +26,7 @@
                     </thead>
                     <tbody>
                     <tr v-for="(item,index) in data" :key="item.id">
+                        <td>{{index+1 }}</td>
                         <td><p class="primary--text underline-on-hover" v-on:click="onQuizNameClick(item.id)">
                             {{item.title}}</p></td>
                         <td>{{ item.topic.label }}</td>
@@ -78,6 +80,7 @@
                 limit: 10,
                 offset: 0,
                 isEnabled: [],
+
             }
         },
         computed: {

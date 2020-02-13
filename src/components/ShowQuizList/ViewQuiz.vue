@@ -97,11 +97,32 @@
                 </v-card>
 
                 <v-layout class="mb-10" v-if="!published">
-                    <v-btn color="primary" class="half-block mr-5" @click="onDeleteButtonCLick">Delete</v-btn>
-                    <v-btn color="primary" class="half-block" depressed @click="onPublishButtonCLick">Publish</v-btn>
+                    <v-btn :loading="deleteBtnLoading" :disabled="publishBtnLoading" color="primary"
+                           class="half-block mr-5" @click="onDeleteButtonCLick">Delete
+                    </v-btn>
+                    <v-btn :loading="publishBtnLoading" :disabled="deleteBtnLoading" color="primary" class="half-block"
+                           depressed @click="onPublishButtonCLick">Publish
+                    </v-btn>
                 </v-layout>
             </v-container>
         </div>
+
+        <!------------------ Snackbar ------------------->
+
+        <v-snackbar
+                v-model="snackbar"
+
+        >
+            {{ snackbarText }}
+            <v-btn
+                    color="primary"
+                    text
+                    @click="snackbar = false"
+            >
+                Close
+            </v-btn>
+        </v-snackbar>
+
     </div>
 </template>
 
@@ -116,6 +137,7 @@
     import {debugLog, errorLog} from "../../app-config";
     import ErrorComponent from "../ErrorComponent";
     import {StateContent, StateError, StateLoading, StateRest} from "../../models/State";
+    import router from "../../router";
 
     export default {
         props: ['quiz_id'],
@@ -129,17 +151,28 @@
         },
         data() {
             return {
-                quizTitle: '',
+
                 quizId: '',
-                published: '',
+
+                quizTitle: '',
                 quizTopic: '',
                 quizDescription: '',
                 quizDuration: '',
-                topicsText: [],
+
                 questions: [],
-                readOnly: false,
+
+                published: '',
+
                 count: 0,
+
                 state: new StateRest(),
+
+                deleteBtnLoading: false,
+                publishBtnLoading: false,
+
+                snackbar: false,
+                snackbarText: '',
+
             }
         },
         computed: {
@@ -151,8 +184,16 @@
             this.fetchSingleQuizData();
         },
         methods: {
+            showSnackbar(msg) {
+                this.snackbarText = msg;
+                this.snackbar = true;
+            },
+
             async onPublishButtonCLick() {
                 try {
+
+                    this.publishBtnLoading = true;
+
                     const token = await AccountManager.getAccessToken();
                     let res = await instance.put(`/quiz/${this.quizId}/publish`, null, {
                         headers: {
@@ -160,13 +201,23 @@
                         }
                     });
 
+                    this.showSnackbar("Quiz Published Successfully!!");
+                    await router.replace('/home/quiz/all/quiz-list');
+
                     debugLog(res)
                 } catch (e) {
+
+                    this.publishBtnLoading = false;
+                    this.showSnackbar("Error in publishing the quiz. Try again to publish the quiz.");
                     errorLog(e)
                 }
             },
+
             async onDeleteButtonCLick() {
                 try {
+
+                    this.deleteBtnLoading = true;
+
                     const token = await AccountManager.getAccessToken();
                     debugLog(token);
                     let res = await instance.delete(`/quiz/${this.quizId}/`, {
@@ -175,8 +226,18 @@
                         }
                     });
 
+                    this.showSnackbar("Quiz Deleted Successfully!!");
+
+                    await router.replace('/home/quiz/all/quiz-list');
+
                     debugLog(res)
+
+
                 } catch (e) {
+
+                    this.showSnackbar("Error in deleting quiz. Try again to delete the quiz.");
+                    this.deleteBtnLoading = false;
+
                     errorLog(e);
                 }
             },

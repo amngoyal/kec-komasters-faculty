@@ -122,7 +122,7 @@
                     this.state = new StateLoading();
 
                     const token = await AccountManager.getAccessToken();
-                    let response = await instance.get(`/submission/id/${this.response_id}`, {
+                    let response = await instance.get(`/submission?submissionId=${this.response_id}`, {
                         headers: {
                             authorization: token
                         }
