@@ -1,102 +1,107 @@
 <template>
     <div>
-        <v-app-bar>
-            <v-app-bar-nav-icon>
-                <v-btn icon to="/home/quiz/all/quiz-list">
-                    <v-icon>mdi-arrow-left</v-icon>
-                </v-btn>
-            </v-app-bar-nav-icon>
-            <v-toolbar-title>{{quizTitle}}</v-toolbar-title>
-        </v-app-bar>
 
-        <v-container>
+        <error :state="this.state"></error>
 
-            <v-card flat outlined class="mb-12" color="grey lighten-3">
-                <v-container>
-                    <v-textarea
-                            rows="1"
-                            auto-grow
-                            dense
-                            label="Title"
-                            v-model="quizTitle"
-                            placeholder="quiz_title"
-                            readonly
-                            background-color="white"
-                            outlined>
+        <div v-if="this.isContent">
+            <v-app-bar>
+                <v-app-bar-nav-icon>
+                    <v-btn icon to="/home/quiz/all/quiz-list">
+                        <v-icon>mdi-arrow-left</v-icon>
+                    </v-btn>
+                </v-app-bar-nav-icon>
+                <v-toolbar-title>{{quizTitle}}</v-toolbar-title>
+            </v-app-bar>
 
-                    </v-textarea>
+            <v-container>
 
-                    <v-textarea
-                            rows="1"
-                            auto-grow
-                            v-model="quizDescription"
-                            readonly
-                            dense
-                            label="Quiz Description"
-                            placeholder="quiz_Description"
-                            background-color="white"
-                            outlined>
+                <v-card flat outlined class="mb-12" color="grey lighten-3">
+                    <v-container>
+                        <v-textarea
+                                rows="1"
+                                auto-grow
+                                dense
+                                label="Title"
+                                v-model="quizTitle"
+                                placeholder="quiz_title"
+                                readonly
+                                background-color="white"
+                                outlined>
 
-                    </v-textarea>
+                        </v-textarea>
 
-                    <v-text-field
-                            v-model="quizDuration"
-                            placeholder="quiz_duration"
-                            type="number"
-                            dense
-                            readonly
-                            label="Quiz Duration"
-                            background-color="white"
-                            outlined>
+                        <v-textarea
+                                rows="1"
+                                auto-grow
+                                v-model="quizDescription"
+                                readonly
+                                dense
+                                label="Quiz Description"
+                                placeholder="quiz_Description"
+                                background-color="white"
+                                outlined>
 
-                    </v-text-field>
+                        </v-textarea>
 
-                    <v-text-field
-                            v-model="quizTopic"
-                            placeholder="quiz_topic"
-                            readonly
-                            dense
-                            label="Topic"
-                            background-color="white"
-                            outlined>
+                        <v-text-field
+                                v-model="quizDuration"
+                                placeholder="quiz_duration"
+                                type="number"
+                                dense
+                                readonly
+                                label="Quiz Duration"
+                                background-color="white"
+                                outlined>
 
-                    </v-text-field>
+                        </v-text-field>
+
+                        <v-text-field
+                                v-model="quizTopic"
+                                placeholder="quiz_topic"
+                                readonly
+                                dense
+                                label="Topic"
+                                background-color="white"
+                                outlined>
+
+                        </v-text-field>
 
 
-                    <strong>Questions:</strong>
+                        <strong>Questions:</strong>
 
-                    <div v-for="(i) in questions" :key="i.uniqueId">
+                        <div v-for="(i) in questions" :key="i.uniqueId">
 
-                        <div v-if="i.questionType === 1">
-                            <show-mcq :question-text="i.question" :options="i.options" :question-number="i.position"
-                                      :points="i.points"></show-mcq>
+                            <div v-if="i.questionType === 1">
+                                <show-mcq :question-text="i.question" :options="i.options" :question-number="i.position"
+                                          :points="i.points"></show-mcq>
+                            </div>
+
+                            <div v-if="i.questionType === 2">
+                                <show-msq :question-text="i.question" :options="i.options" :question-number="i.position"
+                                          :points="i.points"></show-msq>
+                            </div>
+
+                            <div v-if="i.questionType === 3">
+                                <show-fbq :question-text="i.question" :question-number="i.position"
+                                          :options="i.options" :points="i.points"></show-fbq>
+                            </div>
+
+                            <div v-if="i.questionType === 4">
+                                <show-tfq :question-text="i.question" :question-number="i.position"
+                                          :options="i.options" :points="i.points"></show-tfq>
+                            </div>
+
                         </div>
+                    </v-container>
 
-                        <div v-if="i.questionType === 2">
-                            <show-msq :question-text="i.question" :options="i.options" :question-number="i.position"
-                                      :points="i.points"></show-msq>
-                        </div>
+                </v-card>
 
-                        <div v-if="i.questionType === 3">
-                            <show-fbq :question-text="i.question" :question-number="i.position"
-                                      :options="i.options" :points="i.points"></show-fbq>
-                        </div>
-
-                        <div v-if="i.questionType === 4">
-                            <show-tfq :question-text="i.question" :question-number="i.position"
-                                      :options="i.options" :points="i.points"></show-tfq>
-                        </div>
-
-                    </div>
-                </v-container>
-
-            </v-card>
-
-            <v-layout class="mb-10" v-if="!published">
-                <v-btn  color="primary" class="half-block mr-5" @click="onDeleteButtonCLick">Delete</v-btn>
-                <v-btn color="primary" class="half-block" depressed @click="onPublishButtonCLick">Publish</v-btn>
-            </v-layout>
-        </v-container>
+                <v-layout class="mb-10" v-if="!published">
+                    <v-btn color="primary" class="half-block mr-5" @click="onDeleteButtonCLick">Delete</v-btn>
+                    <v-btn color="primary" class="half-block" depressed @click="onPublishButtonCLick">Publish</v-btn>
+                </v-layout>
+            </v-container>
+        </div>
     </div>
 </template>
 
@@ -109,6 +114,8 @@
     import instance from "../../axios";
     import AccountManager from "../../models/AccountManager";
     import {debugLog, errorLog} from "../../app-config";
+    import ErrorComponent from "../ErrorComponent";
+    import {StateContent, StateError, StateLoading, StateRest} from "../../models/State";
 
     export default {
         props: ['quiz_id'],
@@ -118,6 +125,7 @@
             'show-msq': ShowMSQ,
             'show-fbq': ShowFBQ,
             'show-tfq': ShowTFQ,
+            error: ErrorComponent,
         },
         data() {
             return {
@@ -131,82 +139,16 @@
                 questions: [],
                 readOnly: false,
                 count: 0,
+                state: new StateRest(),
             }
         },
+        computed: {
+            isContent() {
+                return this.state instanceof StateContent
+            },
+        },
         async mounted() {
-
-            try {
-
-                const token = await AccountManager.getAccessToken();
-                const res = await instance.get(`/faculty/${AccountManager.user.id}/quiz/${this.quiz_id}`, {
-                    headers: {
-                        authorization: token
-                    }
-                });
-
-                debugLog(res);
-
-                this.quizTitle = res.data.title;
-                this.quizDescription = res.data.description;
-                this.quizDuration = res.data.duration;
-                this.quizTopic = res.data.topic.label;
-                this.published = res.data.published;
-                this.quizId = res.data.id;
-
-                res.data.questions.forEach(item => {
-                    if (item.type === 1) {
-
-                        this.questions.push({
-                            question: item.statement,
-                            points: item.points,
-                            options: item.options,
-                            questionType: 1,
-                            uniqueId: this.count++,
-                            position: item.position + 1,
-
-                        })
-                    }
-
-                    if (item.type === 2) {
-
-
-                        this.questions.push({
-                            question: item.statement,
-                            points: item.points,
-                            options: item.options,
-                            questionType: 2,
-                            uniqueId: this.count++,
-                            position: item.position + 1,
-                        })
-                    }
-
-                    if (item.type === 3) {
-                        this.questions.push({
-                            question: item.statement,
-                            points: item.points,
-                            options: item.options,
-                            questionType: 3,
-                            uniqueId: this.count++,
-                            position: item.position + 1,
-                        })
-                    }
-
-                    if (item.type === 4) {
-
-                        this.questions.push({
-                            question: item.statement,
-                            points: item.points,
-                            questionType: 4,
-                            options: item.options,
-                            uniqueId: this.count++,
-                            position: item.position + 1,
-                        })
-                    }
-
-                })
-            } catch (e) {
-                errorLog(e)
-            }
+            this.fetchSingleQuizData();
         },
         methods: {
             async onPublishButtonCLick() {
@@ -236,6 +178,91 @@
                     debugLog(res)
                 } catch (e) {
                     errorLog(e);
+                }
+            },
+            async fetchSingleQuizData() {
+
+                try {
+
+                    this.state = new StateLoading();
+
+                    const token = await AccountManager.getAccessToken();
+                    const res = await instance.get(`/faculty/${AccountManager.user.id}/quiz/${this.quiz_id}`, {
+                        headers: {
+                            authorization: token
+                        }
+                    });
+
+                    debugLog(res);
+
+                    this.quizTitle = res.data.title;
+                    this.quizDescription = res.data.description;
+                    this.quizDuration = res.data.duration;
+                    this.quizTopic = res.data.topic.label;
+                    this.published = res.data.published;
+                    this.quizId = res.data.id;
+
+                    res.data.questions.forEach(item => {
+                        if (item.type === 1) {
+
+                            this.questions.push({
+                                question: item.statement,
+                                points: item.points,
+                                options: item.options,
+                                questionType: 1,
+                                uniqueId: this.count++,
+                                position: item.position + 1,
+
+                            })
+                        }
+
+                        if (item.type === 2) {
+
+
+                            this.questions.push({
+                                question: item.statement,
+                                points: item.points,
+                                options: item.options,
+                                questionType: 2,
+                                uniqueId: this.count++,
+                                position: item.position + 1,
+                            })
+                        }
+
+                        if (item.type === 3) {
+                            this.questions.push({
+                                question: item.statement,
+                                points: item.points,
+                                options: item.options,
+                                questionType: 3,
+                                uniqueId: this.count++,
+                                position: item.position + 1,
+                            })
+                        }
+
+                        if (item.type === 4) {
+
+                            this.questions.push({
+                                question: item.statement,
+                                points: item.points,
+                                questionType: 4,
+                                options: item.options,
+                                uniqueId: this.count++,
+                                position: item.position + 1,
+                            })
+                        }
+
+                    });
+
+                    this.state = new StateContent();
+
+                    debugLog(res);
+
+                } catch (e) {
+
+                    this.state = new StateError({retryCallback: this.fetchSingleQuizData});
+
+                    errorLog(e)
                 }
             }
         }
