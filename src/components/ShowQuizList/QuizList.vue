@@ -6,7 +6,7 @@
 
             <v-spacer/>
 
-            <v-btn depressed tile color="primary" v-if="isQuiz">
+            <v-btn depressed tile color="primary" v-if="isQuiz" v-on:click="fetchQuizList">
                 <v-icon class="mr-1">mdi-refresh</v-icon>Refresh</v-btn>
 
         </v-app-bar>

@@ -66,6 +66,17 @@
 
                         </v-text-field>
 
+                        <v-text-field
+                                v-model="quizScopes"
+                                placeholder="quiz_scopes"
+                                readonly
+                                dense
+                                label="Quiz Available in"
+                                background-color="white"
+                                outlined>
+
+                        </v-text-field>
+
 
                         <strong>Questions:</strong>
 
@@ -158,6 +169,7 @@
                 quizTopic: '',
                 quizDescription: '',
                 quizDuration: '',
+                quizScopes: '',
 
                 questions: [],
 
@@ -262,6 +274,9 @@
                     this.quizTopic = res.data.topic.label;
                     this.published = res.data.published;
                     this.quizId = res.data.id;
+                    res.data.scopes.forEach(item=>{
+                       this.quizScopes += item.label+ ", "
+                    });
 
                     res.data.questions.forEach(item => {
                         if (item.type === 1) {
