@@ -7,8 +7,8 @@
                 <v-layout>
                     <p class="ml-1">Question {{questionNumber}}</p>
                     <v-spacer/>
-                    <p class="mr-5" :style="(this.correct) ?'color: darkgreen' : 'color: red'">Points obtained:
-                        {{points}}</p>
+                    <p class="mr-5" :style="(this.isCorrect) ?'color: darkgreen' : 'color: red'">Points obtained:
+                        {{pointsObtained}}</p>
                 </v-layout>
 
                 <v-textarea
@@ -28,15 +28,33 @@
                         <v-textarea
                                 rows="1"
                                 auto-grow
+                                dense
                                 :background-color="optionBackgroundColor(index)"
-                                v-model="optionsText[index]"
+                                :dark="!!optionBackgroundColor(index)"
+                                v-model="options[index].text"
                                 solo
                                 filled
-                                :dark="!!optionBackgroundColor(index)"
                                 readonly
                         >
                         </v-textarea>
                     </v-layout>
+
+                    <div v-if="!isCorrect">
+                        <b>Correct Answer:</b>
+                        <v-layout :key="index" v-for="(i,index) in correctOptionsArray">
+                            <v-textarea
+                                    rows="1"
+                                    auto-grow
+                                    dense
+                                    background-color="light-green lighten-2"
+                                    v-model="correctOptionsArray[index].text"
+                                    solo
+                                    filled
+                                    readonly
+                            >
+                            </v-textarea>
+                        </v-layout>
+                    </div>
 
                 </v-flex>
 
@@ -54,23 +72,29 @@
             questionNumber: Number,
             points: Number,
             selectedOptionIndex: Array,
-            isCorrect: Boolean
+            isCorrect: Boolean,
+
         },
         data: () => {
             return {
-                correct: '',
+
                 cardStyle: {
                     'border-left': '8px solid red'
                 },
-                optionsText: []
+                correctOptionsArray: [],
+            }
+        },
+        computed: {
+            pointsObtained() {
+                return this.isCorrect ? this.points : 0
             }
         },
         mounted() {
 
-            this.options.forEach((item,index)=>{
-                this.optionsText.push(item.text);
-                if(item.isCorrect)
-                    this.correctOptionIndex = index
+            this.options.forEach((item) => {
+                if (item.isCorrect) {
+                    this.correctOptionsArray.push(item);
+                }
             });
 
             if (this.isCorrect) {
@@ -81,19 +105,17 @@
         },
         methods: {
             optionBackgroundColor(index) {
+
                 if (this.isCorrect) {
-                    if (this.correctOptionIndex === index) {
-                        return 'green'
-                    }
+                        if (this.selectedOptionIndex.includes(index)) {
+                            return 'green'
+                        }
+
                 } else {
-                    if (this.correctOptionIndex === index) {
-                        return 'green'
-                    }
-                    if (this.selectedOptionIndex === index) {
+                    if (this.selectedOptionIndex.includes(index)) {
                         return 'red'
                     }
                 }
-
             }
 
         }

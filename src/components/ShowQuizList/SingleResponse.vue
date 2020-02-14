@@ -39,7 +39,9 @@
                                           :options="item.options"
                                           :question-number="item.position+1"
                                           :points="item.points"
-                                          :is-correct="isCorrect(item.id)"></show-msq>
+                                          :is-correct="isCorrect(item.id)"
+                                          :selected-option-index="msqSelectedOptionIndex(item.id,index)"
+                                ></show-msq>
                             </div>
 
                             <div v-if="item.type === 3">
@@ -127,7 +129,7 @@
 
             mcqSelectedOptionIndex(id, questionIndex) {
 
-                let selectedIndex = '';
+                let selectedIndex;
 
                 if (this.isCorrect(id)) {
 
@@ -151,6 +153,34 @@
                 }
                 return selectedIndex;
             },
+
+            msqSelectedOptionIndex(id, questionIndex) {
+
+                let selectedIndex = [];
+
+                if (this.isCorrect(id)) {
+
+                    this.questions[questionIndex].options.forEach((item, optionIndex) => {
+                        if (item.isCorrect) {
+                            selectedIndex.push(optionIndex)
+                        }
+                    })
+                } else {
+                    this.answers.forEach((answerItem) => {
+                        if (answerItem.question.id === id) {
+
+                            this.questions[questionIndex].options.forEach((optionItem, optionIndex) => {
+                                if (answerItem.option.id === optionItem.id) {
+                                    selectedIndex.push(optionIndex)
+                                }
+                            })
+
+                        }
+                    })
+                }
+                return selectedIndex;
+            },
+
 
             async fetchSingleResponseData() {
                 try {

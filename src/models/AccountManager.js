@@ -35,7 +35,10 @@ class AccountManager {
         localStorage.removeItem(KEY_REFRESH_TOKEN);
         localStorage.removeItem(KEY_CURRENT_USER);
         localStorage.removeItem(KEY_EXPIRATION_TIME);
+    }
 
+    logout() {
+        this.deleteUserData();
         this.accessToken = null;
         this.refreshToken = null;
         this.user = null;
@@ -47,11 +50,15 @@ class AccountManager {
     }
 
     async getAccessToken() {
-        if (Math.floor(Date.now() / 1000) > this.expirationTime) {
+        if (this.isTokenExpired()) {
             await this.getNewAccessToken()
         }
 
         return this.accessToken;
+    }
+
+    isTokenExpired() {
+        return Math.floor(Date.now() / 1000) > this.expirationTime
     }
 
     getRefreshToken() {
@@ -84,7 +91,7 @@ class AccountManager {
         } catch (e) {
             errorLog(e);
             window.dispatchEvent(new Event('session_expired'));
-            this.deleteUserData();
+            this.logout();
 
         }
 
