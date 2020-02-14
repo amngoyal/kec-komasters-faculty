@@ -8,7 +8,7 @@
                     <p class="ml-1">Question {{questionNumber}}</p>
                     <v-spacer/>
                     <p class="mr-5" :style="(this.isCorrect) ?'color: darkgreen' : 'color: red'">Points obtained:
-                        {{points}}</p>
+                        {{pointsObtained}}</p>
                 </v-layout>
 
                 <v-textarea
@@ -84,6 +84,11 @@
                 correctOptionsArray: []
             }
         },
+        computed: {
+            pointsObtained() {
+                return this.isCorrect ? this.points : 0
+            }
+        },
         mounted() {
 
             this.options.forEach((item) => {
@@ -100,12 +105,11 @@
         },
         methods: {
             optionBackgroundColor(index) {
-                if(this.isCorrect){
+                if (this.isCorrect) {
                     if (this.selectedOptionIndex === index) {
                         return 'green'
                     }
-                }
-                else {
+                } else {
                     if (this.selectedOptionIndex === index) {
                         return 'red'
                     }
