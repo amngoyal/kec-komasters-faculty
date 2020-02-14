@@ -1,14 +1,14 @@
 <template>
     <v-container>
+        <v-card tile :style="[cardStyle]">
 
-        <!------------------------ Question and points obtained ------------------>
-        <v-card tile :style="cardStyle">
+            <!------------------------ Question and points obtained ------------------>
             <v-container>
                 <v-layout>
                     <p class="ml-1">Question {{questionNumber}}</p>
                     <v-spacer/>
-                    <p class="mr-5" :style="(this.correct) ?'color: darkgreen' : 'color: red'">Points obtained:
-                        {{points}}</p>
+                    <p class="mr-5" :style="(this.isCorrect) ?'color: darkgreen' : 'color: red'">Points obtained:
+                        {{pointsObtained}}</p>
                 </v-layout>
 
                 <v-textarea
@@ -22,71 +22,103 @@
 
                 <!-------------------- Options View ---------------------->
 
-                <v-flex class="ml-4 mt-1" xs12 sm4 offset-sm0>
+                <v-flex class="ml-4 mt-1" xs12 sm8 offset-sm0>
 
-                    <v-layout :key="i.value" v-for="i in options">
-                        <v-text-field
+                    <v-layout :key="index" v-for="(i,index) in options">
+                        <v-textarea
                                 rows="1"
                                 auto-grow
-                                :background-color="optionBackgroundColor(i.value)"
-                                v-model="i.text"
+                                dense
+                                :background-color="optionBackgroundColor(index)"
+                                v-model="options[index].text"
+                                :dark="!!optionBackgroundColor(index)"
                                 solo
                                 filled
-                                :dark="!!optionBackgroundColor(i.value)"
                                 readonly
                         >
-                        </v-text-field>
+                        </v-textarea>
                     </v-layout>
+
+                    <div v-if="!isCorrect">
+                        <b>Correct Answer:</b>
+                        <v-layout :key="index" v-for="(i,index) in correctOptionsArray">
+                            <v-textarea
+                                    rows="1"
+                                    auto-grow
+                                    dense
+                                    background-color="light-green lighten-2"
+                                    v-model="correctOptionsArray[index].text"
+                                    solo
+                                    filled
+                                    readonly
+                            >
+                            </v-textarea>
+                        </v-layout>
+                    </div>
 
                 </v-flex>
 
             </v-container>
         </v-card>
     </v-container>
+
 </template>
 <script>
 
     export default {
         props: {
-            questionNumber: Number,
             questionText: String,
+            options: Array,
+            questionNumber: Number,
             points: Number,
-            selectedOption: Boolean,
-            correct: Boolean
+            selectedOptionIndex: Number,
+            isCorrect: Boolean,
+
         },
         data: () => {
             return {
-                options: [{text: "True", value: true}, {text: "False", value: false}],
+
                 cardStyle: {
                     'border-left': '8px solid red'
                 },
+                correctOptionsArray: []
+            }
+        },
+        computed: {
+            pointsObtained() {
+                return this.isCorrect ? this.points : 0
             }
         },
         mounted() {
-            if (this.correct) {
+
+            this.options.forEach((item) => {
+                if (item.isCorrect) {
+                    this.correctOptionsArray.push(item);
+                }
+            });
+
+            if (this.isCorrect) {
                 this.cardStyle = {
                     'border-left': '8px solid green'
                 }
             }
         },
         methods: {
-            optionBackgroundColor(i) {
-
-                if (this.correct) {
-                    if (this.selectedOption === i) {
+            optionBackgroundColor(index) {
+                if (this.isCorrect) {
+                    if (this.selectedOptionIndex === index) {
                         return 'green'
                     }
                 } else {
-                    if (this.selectedOption === i) {
+                    if (this.selectedOptionIndex === index) {
                         return 'red'
                     }
-                    if (!this.selectedOption === i) {
-                        return 'green'
-                    }
                 }
-
             }
 
         }
+
     }
 </script>
+<style scoped>
+</style>

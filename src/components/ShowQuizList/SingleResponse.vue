@@ -54,10 +54,12 @@
 
                             <div v-if="item.type === 4">
                                 <show-tfq :question-text="item.statement"
-                                          :options=[]
+                                          :options="item.options"
                                           :question-number="item.position+1"
                                           :points="item.points"
-                                          :is-correct="isCorrect(item.id)"></show-tfq>
+                                          :is-correct="isCorrect(item.id)"
+                                          :selected-option-index="mcqSelectedOptionIndex(item.id,index)"
+                                ></show-tfq>
                             </div>
 
 
