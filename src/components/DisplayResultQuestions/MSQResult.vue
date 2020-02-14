@@ -29,7 +29,7 @@
                                 rows="1"
                                 auto-grow
                                 :background-color="optionBackgroundColor(index)"
-                                v-model="options[index]"
+                                v-model="optionsText[index]"
                                 solo
                                 filled
                                 :dark="!!optionBackgroundColor(index)"
@@ -49,12 +49,12 @@
 
     export default {
         props: {
-            questionNumber: Number,
             questionText: String,
-            points: Number,
-            selectedOptionIndex: Number,
             options: Array,
-            correctOptionIndex: Number
+            questionNumber: Number,
+            points: Number,
+            selectedOptionIndex: Array,
+            isCorrect: Boolean
         },
         data: () => {
             return {
@@ -62,14 +62,18 @@
                 cardStyle: {
                     'border-left': '8px solid red'
                 },
+                optionsText: []
             }
         },
         mounted() {
-            if (this.selectedOptionIndex === this.correctOptionIndex) {
-                this.correct = true
-            }
 
-            if (this.correct) {
+            this.options.forEach((item,index)=>{
+                this.optionsText.push(item.text);
+                if(item.isCorrect)
+                    this.correctOptionIndex = index
+            });
+
+            if (this.isCorrect) {
                 this.cardStyle = {
                     'border-left': '8px solid green'
                 }
@@ -77,7 +81,7 @@
         },
         methods: {
             optionBackgroundColor(index) {
-                if (this.correct) {
+                if (this.isCorrect) {
                     if (this.correctOptionIndex === index) {
                         return 'green'
                     }

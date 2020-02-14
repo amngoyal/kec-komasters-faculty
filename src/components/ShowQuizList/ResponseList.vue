@@ -12,11 +12,12 @@
 
             <div v-if="isSubmission">
 
-                <v-btn class="mr-12" outlined @click="this.downloadReport">
-                    <a id="download">Export Excel File</a>
-                </v-btn>
 
-                <v-btn color="primary" @click="fetchResponseList()" tile depressed >
+                <a id="download" class="mr-12">
+                    <v-btn outlined @click="this.downloadReport" color="primary">Export Excel File</v-btn>
+                </a>
+
+                <v-btn color="primary" @click="fetchResponseList()" tile depressed>
                     <v-icon class="mr-1">mdi-refresh</v-icon>
                     Refresh
                 </v-btn>

@@ -24,19 +24,37 @@
 
                 <v-flex class="ml-4 mt-1" xs12 sm8 offset-sm0>
 
-                    <v-layout :key="index" v-for="(i,index) in optionsText">
+                    <v-layout :key="index" v-for="(i,index) in options">
                         <v-textarea
                                 rows="1"
                                 auto-grow
+                                dense
                                 :background-color="optionBackgroundColor(index)"
-                                v-model="optionsText[index]"
+                                v-model="options[index].text"
+                                :dark="!!optionBackgroundColor(index)"
                                 solo
                                 filled
-                                :dark="!!optionBackgroundColor(index)"
                                 readonly
                         >
                         </v-textarea>
                     </v-layout>
+
+                    <div v-if="!isCorrect">
+                        <b>Correct Answer:</b>
+                        <v-layout :key="index" v-for="(i,index) in correctOptionsArray">
+                            <v-textarea
+                                    rows="1"
+                                    auto-grow
+                                    dense
+                                    background-color="light-green lighten-2"
+                                    v-model="correctOptionsArray[index].text"
+                                    solo
+                                    filled
+                                    readonly
+                            >
+                            </v-textarea>
+                        </v-layout>
+                    </div>
 
                 </v-flex>
 
@@ -49,12 +67,13 @@
 
     export default {
         props: {
-            questionNumber: Number,
             questionText: String,
+            options: Array,
+            questionNumber: Number,
             points: Number,
             selectedOptionIndex: Number,
-            options: Array,
-            isCorrect: Boolean
+            isCorrect: Boolean,
+
         },
         data: () => {
             return {
@@ -62,16 +81,15 @@
                 cardStyle: {
                     'border-left': '8px solid red'
                 },
-                optionsText:[],
-                correctOptionIndex: '',
+                correctOptionsArray: []
             }
         },
         mounted() {
 
-            this.options.forEach((item,index)=>{
-                this.optionsText.push(item.text);
-                if(item.isCorrect)
-                    this.correctOptionIndex = index
+            this.options.forEach((item) => {
+                if (item.isCorrect) {
+                    this.correctOptionsArray.push(item);
+                }
             });
 
             if (this.isCorrect) {
@@ -82,19 +100,16 @@
         },
         methods: {
             optionBackgroundColor(index) {
-                if (this.isCorrect) {
-                    if (this.correctOptionIndex === index) {
+                if(this.isCorrect){
+                    if (this.selectedOptionIndex === index) {
                         return 'green'
                     }
-                } else {
-                    if (this.correctOptionIndex === index) {
-                        return 'green'
-                    }
+                }
+                else {
                     if (this.selectedOptionIndex === index) {
                         return 'red'
                     }
                 }
-
             }
 
         }

@@ -21,32 +21,40 @@
 
                         <strong>Questions:</strong>
 
-                        <div v-for="item in questions" :key="item.id">
+                        <div v-for="(item,index) in questions" :key="item.id">
 
                             <div v-if="item.type === 1">
-                                <show-mcq :question-text="item.statement" :options="item.options"
+                                <show-mcq :question-text="item.statement"
+                                          :options="item.options"
                                           :question-number="item.position+1"
-                                          :correct-option-index="2" :points="item.points"
-                                          :is-correct="isCorrect(item.id)"></show-mcq>
+                                          :points="item.points"
+                                          :is-correct="isCorrect(item.id)"
+                                          :selected-option-index="mcqSelectedOptionIndex(item.id,index)"
+
+                                ></show-mcq>
                             </div>
 
                             <div v-if="item.type === 2">
-                                <show-msq :question-text="item.statement" :options="['a','b','c']"
+                                <show-msq :question-text="item.statement"
+                                          :options="item.options"
                                           :question-number="item.position+1"
-                                          :correct-option-index="2" :points="item.points"
+                                          :points="item.points"
                                           :is-correct="isCorrect(item.id)"></show-msq>
                             </div>
 
                             <div v-if="item.type === 3">
-                                <show-fbq :question-text="item.statement" :options="['a','b','c']"
+                                <show-fbq :question-text="item.statement"
+                                          :options="['a','b','c']"
                                           :question-number="item.position+1"
-                                          :correct-option-index="2" :points="item.points"
+                                          :points="item.points"
                                           :is-correct="isCorrect(item.id)"></show-fbq>
                             </div>
 
                             <div v-if="item.type === 4">
-                                <show-tfq :question-text="item.statement" :question-number="item.position+1"
-                                          :correct-option-index="1" :points="item.points"
+                                <show-tfq :question-text="item.statement"
+                                          :options=[]
+                                          :question-number="item.position+1"
+                                          :points="item.points"
                                           :is-correct="isCorrect(item.id)"></show-tfq>
                             </div>
 
@@ -116,6 +124,34 @@
 
                 return correct;
             },
+
+            mcqSelectedOptionIndex(id, questionIndex) {
+
+                let selectedIndex = '';
+
+                if (this.isCorrect(id)) {
+
+                    this.questions[questionIndex].options.forEach((item, optionIndex) => {
+                        if (item.isCorrect) {
+                            selectedIndex = optionIndex
+                        }
+                    })
+                } else {
+                    this.answers.forEach((answerItem) => {
+                        if (answerItem.question.id === id) {
+
+                            this.questions[questionIndex].options.forEach((optionItem, optionIndex) => {
+                                if (answerItem.option.id === optionItem.id) {
+                                    selectedIndex = optionIndex
+                                }
+                            })
+
+                        }
+                    })
+                }
+                return selectedIndex;
+            },
+
             async fetchSingleResponseData() {
                 try {
 
