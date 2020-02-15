@@ -44,12 +44,7 @@
                         <td class="text-center">{{ item.maxScore }}</td>
                         <td>{{ item.createdAt }}</td>
                         <td class="text-center">
-
-                            <!--     <v-btn outlined v-if="item.published" class="underline-on-hover"
-                                        :color="item.enabled ? 'green': 'red'" :id="'eb-' + index"
-                                        v-on:click="onEnableButtonClick(item.id, item.enabled,index)"
-                                 >{{item.enabled ? 'Enabled': 'Disabled'}}
-                                 </v-btn>-->
+                            
                             <enable-button :enabled="item.enabled" :position="index"
                                            v-if="item.published" :quiz-id="item.quizId"></enable-button>
 

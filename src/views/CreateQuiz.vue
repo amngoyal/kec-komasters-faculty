@@ -300,7 +300,7 @@
             async fetchTopics() {
 
                 this.state = new StateLoading();
-                const result = await getFrom('/topic');
+                const result = await getFrom('/topic?load=enabled');
 
                 if (result instanceof ErrorResult) {
                     this.state = new StateError({
