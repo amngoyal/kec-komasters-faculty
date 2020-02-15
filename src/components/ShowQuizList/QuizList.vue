@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <v-app>
 
         <v-app-bar flat>
             <v-toolbar-title>Your Uploaded Quiz</v-toolbar-title>
@@ -7,7 +7,9 @@
             <v-spacer/>
 
             <v-btn depressed tile color="primary" v-if="isQuiz" v-on:click="fetchQuizList">
-                <v-icon class="mr-1">mdi-refresh</v-icon>Refresh</v-btn>
+                <v-icon class="mr-1">mdi-refresh</v-icon>
+                Refresh
+            </v-btn>
 
         </v-app-bar>
 
@@ -27,26 +29,29 @@
                         <th class="text-center subtitle-2">No. of questions</th>
                         <th class="text-center subtitle-2">Max Score</th>
                         <th class="text-left subtitle-2">Created At</th>
-                        <th class="text-left subtitle-2">Status</th>
+                        <th class="text-center subtitle-2">Status</th>
                         <th></th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="(item,index) in data" :key="item.id">
+                    <tr v-for="(item,index) in data" :key="item.quizId">
                         <td>{{index+1 }}</td>
-                        <td><p class="primary--text underline-on-hover" v-on:click="onQuizNameClick(item.id)">
+                        <td><p class="primary--text underline-on-hover" v-on:click="onQuizNameClick(item.quizId)">
                             {{item.title}}</p></td>
                         <td>{{ item.topic }}</td>
                         <td class="text-center">{{ item.duration }} min</td>
                         <td class="text-center">{{ item.questionCount }}</td>
                         <td class="text-center">{{ item.maxScore }}</td>
                         <td>{{ item.createdAt }}</td>
-                        <td>
+                        <td class="text-center">
 
-                            <v-switch color="green" v-if="item.published" v-model="item.enabled"
-                                      v-on:change="onSwitchStateChange(item.id, item.enabled,index)"
-
-                                      :label="item.enabled ? 'Enabled': 'Disabled'"></v-switch>
+                            <!--     <v-btn outlined v-if="item.published" class="underline-on-hover"
+                                        :color="item.enabled ? 'green': 'red'" :id="'eb-' + index"
+                                        v-on:click="onEnableButtonClick(item.id, item.enabled,index)"
+                                 >{{item.enabled ? 'Enabled': 'Disabled'}}
+                                 </v-btn>-->
+                            <enable-button :enabled="item.enabled" :position="index"
+                                           v-if="item.published" :quiz-id="item.quizId"></enable-button>
 
                             <p class="red--text underline-on-hover" v-if="!item.published"
                                @click="onQuizNameClick(item.id)">*Action
@@ -57,7 +62,7 @@
 
                         <td>
                             <v-btn v-if="item.published" depressed color="#E9E8F6" class="primary--text"
-                                   @click="onViewResponseButtonClick(item.id,item.title)">View
+                                   @click="onViewResponseButtonClick(item.quizId,item.title)">View
                                 Responses
                             </v-btn>
                         </td>
@@ -66,7 +71,7 @@
                 </template>
             </v-simple-table>
         </div>
-    </div>
+    </v-app>
 </template>
 
 <script>
@@ -76,10 +81,12 @@
     import router from "../../router";
     import {StateContent, StateError, StateLoading, StateRest} from "../../models/State";
     import ErrorComponent from "../ErrorComponent";
+    import EnableButton from "../EnableButton";
+
 
     export default {
         name: "QuizList",
-        components: {'error': ErrorComponent},
+        components: {'error': ErrorComponent, 'enable-button': EnableButton},
         data() {
             return {
                 state: new StateRest(),
@@ -87,7 +94,9 @@
                 limit: 50,
                 offset: 0,
                 isEnabled: [],
-                isQuiz: false
+                isQuiz: false,
+                switchValue: [],
+                enableButtonLoading: [],
 
             }
         },
@@ -104,26 +113,7 @@
                 this.$router.push({path: '/home/quiz/all/responses/' + id, query: {quiz_title: title}})
             },
 
-            async onSwitchStateChange(id, action, index) {
 
-                try {
-
-                    const token = await AccountManager.getAccessToken();
-                    const response = await instance.put(`/quiz/${id}/enable?action=${action ? '1' : '0'}`, null, {
-                        headers: {
-                            authorization: token
-                        }
-                    });
-
-                    debugLog(response);
-
-                } catch (e) {
-
-                    debugLog(this.data[index].enabled);
-                    this.data[index].enabled = !this.data[index].enabled;
-                    errorLog(e);
-                }
-            },
             onQuizNameClick(id) {
                 router.push('/home/quiz/all/' + id);
             },
@@ -145,7 +135,7 @@
 
                     response.data.forEach(item => {
                         this.data.push({
-                            id: item.id,
+                            quizId: item.id,
                             title: item.title,
                             maxScore: item.maxScore,
                             questionCount: item.questionCount,
@@ -154,9 +144,11 @@
                             enabled: item.enabled,
                             published: item.published,
                             topic: item.topic.label,
-                            scopes: item.scopes,
-                        })
+                        });
+
+                        this.enableButtonLoading.push(false)
                     });
+
                     debugLog(response.data);
                     this.state = new StateContent();
                     this.isQuiz = true;
