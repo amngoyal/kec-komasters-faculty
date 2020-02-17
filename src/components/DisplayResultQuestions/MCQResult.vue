@@ -5,7 +5,7 @@
             <!------------------------ Question and points obtained ------------------>
             <v-container>
                 <v-layout class="mb-3">
-                    <b class="ml-1"  style="font-size: 18px">Question {{questionNumber}}</b>
+                    <b class="ml-1"  style="font-size: 18px">Question: {{questionNumber}}</b>
                     <v-spacer/>
                     <b class="mr-5" :style="(this.isCorrect) ?'color: darkgreen' : 'color: red'">Points obtained:
                         {{pointsObtained}}</b>
@@ -47,8 +47,7 @@
                                     dense
                                     background-color="light-green lighten-2"
                                     v-model="correctOptionsArray[index].text"
-                                    solo
-                                    filled
+                                    outlined
                                     readonly
                             >
                             </v-textarea>
