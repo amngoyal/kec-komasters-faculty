@@ -5,10 +5,11 @@
             <!------------------------ Question and points obtained ------------------>
             <v-container>
                 <v-layout class="mb-3">
-                    <b  style="font-size: 18px" class="ml-1">Question:
+                    <b style="font-size: 18px" class="ml-1">Question:
                         {{questionNumber}}</b>
                     <v-spacer/>
-                    <b  style="font-size: 18px" class="mr-5" :style="(this.isCorrect) ?'color: darkgreen' : 'color: red'">Points obtained:
+                    <b style="font-size: 18px" class="mr-5"
+                       :style="(this.isCorrect) ?'color: darkgreen' : 'color: red'">Points obtained:
                         {{pointsObtained}}</b>
                 </v-layout>
 
@@ -30,8 +31,8 @@
                                 rows="1"
                                 auto-grow
                                 dense
-                                :background-color="optionBackgroundColor(index)"
-                                :dark="!!optionBackgroundColor(index)"
+                                :background-color="optionBackgroundColor(i.isCorrect,i.id)"
+                                :dark="!!optionBackgroundColor(i.isCorrect,i.id)"
                                 v-model="options[index].text"
                                 outlined
                                 readonly
@@ -70,7 +71,7 @@
             options: Array,
             questionNumber: Number,
             points: Number,
-            selectedOptionIndex: Array,
+            isSelected: Array,
             isCorrect: Boolean,
 
         },
@@ -103,15 +104,17 @@
             }
         },
         methods: {
-            optionBackgroundColor(index) {
+            optionBackgroundColor(isCorrect, id) {
 
-                if (this.isCorrect) {
-                        if (this.selectedOptionIndex.includes(index)) {
-                            return 'green'
-                        }
-
+                if (isCorrect) {
+                    if (this.isCorrect)
+                        return 'green';
+                    else
+                        return 'light-green'
                 } else {
-                    if (this.selectedOptionIndex.includes(index)) {
+                    if (this.isSelected.filter(item => {
+                        return item.option.id === id
+                    }).length !== 0) {
                         return 'red lighten-1'
                     }
                 }

@@ -40,7 +40,7 @@
                                           :question-number="item.position+1"
                                           :points="item.points"
                                           :is-correct="isCorrect(item.id)"
-                                          :selected-option-index="msqSelectedOptionIndex(item.id,index)"
+                                          :isSelected="msqSelectedOptionIndex(item.id,index)"
                                 ></show-msq>
                             </div>
 
@@ -151,31 +151,9 @@
                 return selectedIndex;
             },
 
-            msqSelectedOptionIndex(id, questionIndex) {
+            msqSelectedOptionIndex(id) {
 
-                let selectedIndex = [];
-
-                if (this.isCorrect(id)) {
-
-                    this.questions[questionIndex].options.forEach((item, optionIndex) => {
-                        if (item.isCorrect) {
-                            selectedIndex.push(optionIndex)
-                        }
-                    })
-                } else {
-                    this.answers.forEach((answerItem) => {
-                        if (answerItem.question.id === id) {
-
-                            this.questions[questionIndex].options.forEach((optionItem, optionIndex) => {
-                                if (answerItem.option.id === optionItem.id) {
-                                    selectedIndex.push(optionIndex)
-                                }
-                            })
-
-                        }
-                    })
-                }
-                return selectedIndex;
+                return this.questionMap.get(id)
             },
 
 
@@ -196,8 +174,6 @@
                     blanks.push(arr)
                 });
 
-                debugLog(`Number of blanks: ${blanks.length}`);
-                debugLog(`blanks: ${JSON.stringify(blanks, null, 2)}`);
 
                 return blanks;
 
