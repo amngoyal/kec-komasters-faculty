@@ -4,18 +4,19 @@
 
             <!------------------------ Question and points obtained ------------------>
             <v-container>
-                <v-layout>
-                    <p class="ml-1">Question {{questionNumber}}</p>
+                <v-layout class="mb-3">
+                    <b class="ml-1" style="font-size: 18px">Question: {{questionNumber}}</b>
                     <v-spacer/>
-                    <p class="mr-5" :style="(this.isCorrect) ?'color: darkgreen' : 'color: red'">Points obtained:
-                        {{pointsObtained}}</p>
+                    <b class="mr-5" style="font-size: 18px;"
+                       :style="(this.isCorrect) ?'color: darkgreen' : 'color: red'">Points obtained:
+                        {{pointsObtained}}</b>
                 </v-layout>
 
                 <v-textarea
                         rows="1"
                         auto-grow
                         v-model="questionText"
-                        solo
+                        outlined
                         readonly
                 ></v-textarea>
 
