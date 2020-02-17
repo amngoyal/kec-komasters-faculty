@@ -46,7 +46,8 @@
 
                             <div v-if="item.type === 3">
                                 <show-fbq :question-text="item.statement"
-                                          :options="['a','b','c']"
+                                          :options="fbqOptionsArray(item.id,index)"
+                                          :is-selected="fbqSelectedOptionIndex(item.id)"
                                           :question-number="item.position+1"
                                           :points="item.points"
                                           :is-correct="isCorrect(item.id)"></show-fbq>
@@ -98,6 +99,7 @@
                 questions: '',
                 answers: '',
                 state: new StateRest(),
+                questionMap: new Map(),
             }
         },
         computed: {
@@ -117,16 +119,9 @@
             },
 
             isCorrect(questionId) {
-                let correct = true;
 
-                for (let i = 0; i < this.answers.length; i++) {
-                    if (this.answers[i].question.id === questionId) {
-                        correct = false;
-                        break;
-                    }
-                }
+                return this.questionMap.get(questionId).length === 0;
 
-                return correct;
             },
 
             mcqSelectedOptionIndex(id, questionIndex) {
@@ -184,7 +179,37 @@
             },
 
 
+            fbqOptionsArray(id, questionIndex) {
+                let options = this.questions[questionIndex].options;
+                let distinctIndexes = [];
+                let blanks = [];
+
+                options.forEach((item) => {
+                    if (!distinctIndexes.includes(item.index)) {
+                        distinctIndexes.push(item.index);
+                    }
+
+                });
+
+                distinctIndexes.sort((a, b) => a - b).forEach((distinctIndex) => {
+                    let arr = options.filter((item) => item.index === distinctIndex);
+                    blanks.push(arr)
+                });
+
+                debugLog(`Number of blanks: ${blanks.length}`);
+                debugLog(`blanks: ${JSON.stringify(blanks, null, 2)}`);
+
+                return blanks;
+
+            },
+
+            fbqSelectedOptionIndex(id) {
+                return this.questionMap.get(id)
+            },
+
+
             async fetchSingleResponseData() {
+
                 try {
 
                     this.state = new StateLoading();
@@ -198,6 +223,15 @@
 
                     this.questions = response.data.quiz.questions;
                     this.answers = response.data.answers;
+
+                    // Map to map question id with wrong answers
+                    this.questions.forEach((ques) => {
+
+                        this.questionMap.set(ques.id, this.answers.filter(ans => {
+                            return ques.id === ans.question.id
+                        }))
+
+                    });
 
                     debugLog(response);
 

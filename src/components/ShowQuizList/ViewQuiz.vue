@@ -193,6 +193,7 @@
             },
         },
         async mounted() {
+
             this.fetchSingleQuizData();
         },
         methods: {
@@ -333,7 +334,6 @@
 
                     this.state = new StateContent();
 
-                    debugLog(res);
 
                 } catch (e) {
 

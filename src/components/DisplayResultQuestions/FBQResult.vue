@@ -22,40 +22,23 @@
 
                 <!-------------------- Options View ---------------------->
 
-                <v-flex class="ml-4 mt-1" xs12 sm8 offset-sm0>
 
-                    <v-layout :key="index" v-for="(i,index) in options">
-                        <v-textarea
-                                rows="1"
-                                auto-grow
-                                dense
-                                :background-color="optionBackgroundColor(index)"
-                                v-model="options[index].text"
-                                :dark="!!optionBackgroundColor(index)"
-                                solo
-                                filled
-                                readonly
-                        >
-                        </v-textarea>
-                    </v-layout>
+                <v-flex class="ml-2 mt-1" :key="blankIndex" v-for="(blank,blankIndex) in options" xs12 sm8 offset-sm0>
 
-                    <div v-if="!isCorrect">
-                        <b>Correct Answer:</b>
-                        <v-layout :key="index" v-for="(i,index) in correctOptionsArray">
-                            <v-textarea
-                                    rows="1"
-                                    auto-grow
-                                    dense
-                                    background-color="light-green lighten-2"
-                                    v-model="correctOptionsArray[index].text"
-                                    solo
-                                    filled
-                                    readonly
-                            >
-                            </v-textarea>
-                        </v-layout>
-                    </div>
+                    <b>Options for Blank {{blankIndex+1}}</b>
 
+                    <v-textarea
+                            v-for="(i) in blank" :key="i.id"
+                            rows="1"
+                            auto-grow
+                            dense
+                            :background-color="optionBackgroundColor(i.isCorrect,i.id)"
+                            v-model="i.text"
+                            outlined
+                            :dark="!!optionBackgroundColor(i.isCorrect,i.id)"
+                            readonly
+                    >
+                    </v-textarea>
                 </v-flex>
 
             </v-container>
@@ -71,8 +54,8 @@
             options: Array,
             questionNumber: Number,
             points: Number,
-            selectedOptionIndex: Number,
             isCorrect: Boolean,
+            isSelected: Array
 
         },
         data: () => {
@@ -91,12 +74,6 @@
         },
         mounted() {
 
-            this.options.forEach((item) => {
-                if (item.isCorrect) {
-                    this.correctOptionsArray.push(item);
-                }
-            });
-
             if (this.isCorrect) {
                 this.cardStyle = {
                     'border-left': '8px solid green'
@@ -104,13 +81,13 @@
             }
         },
         methods: {
-            optionBackgroundColor(index) {
-                if (this.isCorrect) {
-                    if (this.selectedOptionIndex === index) {
-                        return 'green'
-                    }
+            optionBackgroundColor(isCorrect, id) {
+                if (isCorrect) {
+                    return 'green'
                 } else {
-                    if (this.selectedOptionIndex === index) {
+                    if (this.isSelected.filter(item => {
+                        return item.option.id === id
+                    }).length !== 0) {
                         return 'red'
                     }
                 }

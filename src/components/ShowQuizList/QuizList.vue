@@ -44,12 +44,12 @@
                         <td class="text-center">{{ item.maxScore }}</td>
                         <td>{{ item.createdAt }}</td>
                         <td class="text-center">
-                            
+
                             <enable-button :enabled="item.enabled" :position="index"
                                            v-if="item.published" :quiz-id="item.quizId"></enable-button>
 
                             <p class="red--text underline-on-hover" v-if="!item.published"
-                               @click="onQuizNameClick(item.id)">*Action
+                               @click="onQuizNameClick(item.quizId)">*Action
                                 Required*</p>
 
                         </td>
