@@ -46,7 +46,7 @@
                                     rows="1"
                                     auto-grow
                                     dense
-                                    background-color="light-green lighten-2"
+                                    background-color="light-green"
                                     v-model="correctOptionsArray[index].text"
                                     solo
                                     filled
@@ -111,7 +111,7 @@
                     }
                 } else {
                     if (this.selectedOptionIndex === index) {
-                        return 'red'
+                        return 'red lighten-1'
                     }
                 }
             }

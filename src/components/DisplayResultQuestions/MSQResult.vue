@@ -5,7 +5,8 @@
             <!------------------------ Question and points obtained ------------------>
             <v-container>
                 <v-layout class="mb-3">
-                    <b  style="font-size: 18px" class="ml-1">Question {{questionNumber}}</b>
+                    <b  style="font-size: 18px" class="ml-1">Question:
+                        {{questionNumber}}</b>
                     <v-spacer/>
                     <b  style="font-size: 18px" class="mr-5" :style="(this.isCorrect) ?'color: darkgreen' : 'color: red'">Points obtained:
                         {{pointsObtained}}</b>
@@ -45,7 +46,7 @@
                                     rows="1"
                                     auto-grow
                                     dense
-                                    background-color="light-green lighten-2"
+                                    background-color="light-green"
                                     v-model="correctOptionsArray[index].text"
                                     outlined
                                     readonly
@@ -111,7 +112,7 @@
 
                 } else {
                     if (this.selectedOptionIndex.includes(index)) {
-                        return 'red'
+                        return 'red lighten-1'
                     }
                 }
             }
