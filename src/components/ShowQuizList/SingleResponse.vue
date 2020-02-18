@@ -157,6 +157,10 @@
             },
 
 
+            fbqSelectedOptionIndex(id) {
+                return this.questionMap.get(id)
+            },
+
             fbqOptionsArray(id, questionIndex) {
                 let options = this.questions[questionIndex].options;
                 let distinctIndexes = [];
@@ -179,9 +183,6 @@
 
             },
 
-            fbqSelectedOptionIndex(id) {
-                return this.questionMap.get(id)
-            },
 
 
             async fetchSingleResponseData() {

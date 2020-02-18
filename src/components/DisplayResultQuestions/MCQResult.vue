@@ -45,7 +45,7 @@
                                     rows="1"
                                     auto-grow
                                     dense
-                                    background-color="light-green"
+                                    background-color="light-green lighten-4"
                                     v-model="correctOptionsArray[index].text"
                                     outlined
                                     readonly

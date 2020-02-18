@@ -85,8 +85,9 @@
             optionBackgroundColor(isCorrect, id) {
                 if (isCorrect) {
                     if (this.isCorrect)
-                        return 'green'
-                    else return 'light-green'
+                        return 'green';
+                    else
+                        return 'light-green'
                 } else {
                     if (this.isSelected.filter(item => {
                         return item.option.id === id

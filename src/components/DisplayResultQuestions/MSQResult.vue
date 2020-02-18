@@ -47,7 +47,7 @@
                                     rows="1"
                                     auto-grow
                                     dense
-                                    background-color="light-green"
+                                    background-color="light-green lighten-4"
                                     v-model="correctOptionsArray[index].text"
                                     outlined
                                     readonly
@@ -110,7 +110,7 @@
                     if (this.isSelected.filter(item => {
                         return item.option.id === id
                     }).length !== 0) {
-                        return 'green'
+                        return 'light-green'
                     }
                     if (this.isCorrect)
                         return 'green';
