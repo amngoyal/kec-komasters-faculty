@@ -11,6 +11,7 @@ import QuizList from "../components/ShowQuizList/QuizList";
 import ViewQuiz from "../components/ShowQuizList/ViewQuiz";
 import SingleResponse from "../components/ShowQuizList/SingleResponse";
 import ResponseList from "../components/ShowQuizList/ResponseList";
+import Profile from "../views/Profile";
 
 import AccountManager from '../models/AccountManager'
 
@@ -34,6 +35,11 @@ const routes = [{
                 path: 'quiz/create',
                 name: 'CreateQuiz',
                 component: CreateQuiz,
+            },
+            {
+                path: 'profile/:user_id',
+                name: 'Profile',
+                component: Profile,
             },
             {
                 path: 'quiz/all',

@@ -4,8 +4,8 @@
         <!--------------------------------- Navigation Drawer --------------------------->
         <v-navigation-drawer v-model="nav" mobile-break-point="960" clipped app width="305">
 
-            <v-list-item>
-                <v-list-item-content class="pb-0 mt-2">
+            <v-list-item @click="goToProfilePage" class="pa-1 mb-0">
+                <v-list-item-content >
                     <v-list-item-title>
                         {{userName}}
                     </v-list-item-title>
@@ -15,7 +15,7 @@
                 </v-list-item-content>
             </v-list-item>
 
-            <v-divider></v-divider>
+            <v-divider ></v-divider>
 
             <v-list nav subheader>
 
@@ -86,6 +86,10 @@
 
             <v-spacer></v-spacer>
 
+            <v-btn icon class="mr-4" @click="goToProfilePage">
+                <v-icon>mdi-account-circle-outline</v-icon>
+            </v-btn>
+
             <v-btn @click="onLogout" outlined>Log Out</v-btn>
         </v-app-bar>
 
@@ -114,11 +118,13 @@
 <script>
 
     import AccountManager from "../models/AccountManager";
+    import router from "../router";
 
     export default {
         data: () => ({
             nav: false,
             userName: 'user_name',
+            userId: '',
             dialog: false,
 
             userData: {},
@@ -154,7 +160,8 @@
 
             this.userData = AccountManager.getUserData();
             if (this.userData.name != null) {
-                this.userName = this.userData.name
+                this.userName = this.userData.name;
+                this.userId = this.userData.id;
             }
 
             this.onWindowResize();
@@ -181,6 +188,10 @@
             onLoginAgainButtonPress() {
                 this.$router.replace('Login')
             },
+            goToProfilePage(){
+                const location = `/home/profile/${this.userId}`;
+               router.push(location,()=>{},()=>{})
+            }
         }
     }
 </script>
