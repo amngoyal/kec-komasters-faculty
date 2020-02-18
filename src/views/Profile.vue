@@ -3,8 +3,13 @@
 </template>
 
 <script>
+   // import instance from "../axios";
+
     export default {
-        name: "Profile"
+        name: "Profile",
+        mounted() {
+
+        }
     }
 </script>
 

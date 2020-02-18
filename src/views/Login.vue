@@ -153,7 +153,7 @@
                             }
                         });
 
-                        debugLog("Login: " + JSON.stringify(response));
+                        debugLog("Login: " + JSON.stringify(response,null,2));
 
 
                         AccountManager.saveUserData(response.data.accessToken, response.data.refreshToken, response.data.user);
