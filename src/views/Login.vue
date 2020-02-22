@@ -95,8 +95,8 @@
         data: () => {
             return {
                 loading: false,
-                kecId: 'KECF4623',
-                password: 'gagan@4632',
+                kecId: '',
+                password: '',
                 clientWidth: 0,
                 clientHeight: 0,
 
