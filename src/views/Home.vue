@@ -45,32 +45,6 @@
                     </v-list-item>
                 </v-list-group>
 
-                <v-list-group
-                        prepend-icon="mdi-alpha-s-box"
-                        :value="false"
-                        no-action
-                >
-                    <template v-slot:activator>
-                        <v-list-item-title>Sentimental Analysis</v-list-item-title>
-                    </template>
-
-                    <v-list-item
-                            v-for="(item, i) in sentimentalAnalysisItems"
-                            :key="i"
-                            :to="item.to"
-                            style="text-decoration: none"
-                    >
-                        <v-list-item-content>
-                            <v-list-item-title v-text="item.title">
-                            </v-list-item-title>
-                        </v-list-item-content>
-
-                        <v-list-item-action>
-                            <v-icon v-text="item.icon"></v-icon>
-                        </v-list-item-action>
-                    </v-list-item>
-                </v-list-group>
-
 
             </v-list>
         </v-navigation-drawer>
@@ -131,11 +105,6 @@
             quizItems: [
                 {title: 'All', icon: 'mdi-format-list-checkbox', to: '/home/quiz/all'},
                 {title: 'Create', icon: 'mdi-plus-thick', to: '/home/quiz/create'},
-            ],
-
-            sentimentalAnalysisItems: [
-                {title: 'All', icon: 'mdi-format-list-checkbox', to: '/home/sa/all'},
-                {title: 'Create', icon: 'mdi-plus-thick', to: '/home/sa/create'},
             ],
 
 
