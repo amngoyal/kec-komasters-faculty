@@ -2,9 +2,9 @@
     <v-app>
 
         <!--------------------------------- Navigation Drawer --------------------------->
-        <v-navigation-drawer v-model="nav" mobile-break-point="960" clipped app width="305">
+        <v-navigation-drawer v-model="nav" mobile-break-point="960" clipped app width="270" >
 
-            <v-list-item @click="goToProfilePage" class="pa-1 mb-0">
+            <v-list-item class=" pl-5 mb-0">
                 <v-list-item-content >
                     <v-list-item-title>
                         {{userName}}
@@ -60,9 +60,6 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn icon class="mr-4" @click="goToProfilePage">
-                <v-icon>mdi-account-circle-outline</v-icon>
-            </v-btn>
 
             <v-btn @click="onLogout" outlined>Log Out</v-btn>
         </v-app-bar>
