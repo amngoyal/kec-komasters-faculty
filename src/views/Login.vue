@@ -95,8 +95,8 @@
         data: () => {
             return {
                 loading: false,
-                kecId: '',
-                password: '',
+                kecId: 'KECF4623',
+                password: 'gagan@4632',
                 clientWidth: 0,
                 clientHeight: 0,
 
@@ -153,7 +153,7 @@
                             }
                         });
 
-                        debugLog("Login: " + JSON.stringify(response,null,2));
+                        debugLog("Login: " + JSON.stringify(response));
 
 
                         AccountManager.saveUserData(response.data.accessToken, response.data.refreshToken, response.data.user);
