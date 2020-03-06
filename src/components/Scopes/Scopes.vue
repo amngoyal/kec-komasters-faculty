@@ -579,7 +579,13 @@
                         {section: "A", value: '1A'},
                         {section: "B", value: '1B'},
                         {section: "C", value: '1C'},
-                        {section: "D", value: '1D'}
+                        {section: "D", value: '1D'},
+                        {section: "E", value: '1E'},
+                        {section: "F", value: '1F'},
+                        {section: "G", value: '1G'},
+                        {section: "H", value: '1H'},
+                        {section: "I", value: '1I'},
+                        {section: "J", value: '1J'},
                     ],
                 firstAll: false,
                 firstAs: [],
@@ -707,7 +713,7 @@
                 }
 
                 if (this.firstAll && !this.AS) {
-                    this.firstAs = ['1A', '1B', '1C', '1D'];
+                    this.firstAs = ['1A', '1B', '1C', '1D', '1E', '1F', '1G', '1H', '1I', '1J'];
                     this.AS = true;
                 }
 
