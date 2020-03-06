@@ -31,10 +31,11 @@
         <div v-if="this.isContent">
 
 
-            <v-simple-table fixed-header>
+            <v-simple-table fixed-header class="mb-12">
                 <template v-slot:default>
                     <thead>
                     <tr>
+                        <th class="text-center subtitle-2">S.no</th>
                         <th class="text-left subtitle-2">KecId</th>
                         <th class="text-left subtitle-2">Name</th>
                         <th class="text-center subtitle-2">Year</th>
@@ -48,7 +49,8 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="item in submissionList" :key="item.id">
+                    <tr v-for="(item,index) in submissionList" :key="item.id">
+                        <td class="text-center">{{count + index + 1}}</td>
                         <td>{{item.kecId}}</td>
                         <td>{{item.name}}</td>
                         <td class="text-center">{{item.year}}</td>
@@ -68,6 +70,16 @@
                     </tbody>
                 </template>
             </v-simple-table>
+        </div>
+
+        <div v-if="responseCount !== 0 " class="text-center fixed-bottom mb-4">
+            <v-pagination
+                    dark
+                    v-on:input="onPageChange()"
+                    color="primary"
+                    v-model="page"
+                    :length="Math.ceil(responseCount/limit)"
+            ></v-pagination>
         </div>
 
     </div>
@@ -90,10 +102,12 @@
         data() {
             return {
                 submissionList: [],
-                limit: 200,
-                offset: 0,
+                limit: 20,
                 state: new StateRest(),
-                isSubmission: false
+                isSubmission: false,
+                page: 1,
+                responseCount: 0,
+                count: 1,
             }
         },
         computed: {
@@ -118,7 +132,7 @@
             }
         },
         async mounted() {
-            await this.fetchResponseList();
+            await this.fetchResponseList(0);
         },
         methods: {
             onViewReportButtonClick(id, name, kecId) {
@@ -145,7 +159,7 @@
                 a.href = blobUrl;
             },
 
-            async fetchResponseList() {
+            async fetchResponseList(offset) {
 
                 this.submissionList = [];
 
@@ -154,36 +168,42 @@
                     this.state = new StateLoading();
 
                     const token = await AccountManager.getAccessToken();
-                    let response = await instance.get(`/submission/quiz/${this.quiz_id}?limit=${this.limit}&offset=${this.offset}`, {
+                    let response = await instance.get(`/submission/quiz/${this.quiz_id}?limit=${this.limit}&offset=${offset}`, {
                         headers: {
                             authorization: token
                         }
                     });
 
+                    debugLog(response);
 
-                    response.data.forEach(item => {
+                    response.data.submissions.forEach(item => {
 
                         let date = new Date(item.submittedAt);
 
-                        this.submissionList.push({
-                            id: item.id,
-                            kecId: item.submittedBy.kecId,
-                            name: item.submittedBy.name,
-                            year: item.submittedBy.cls.year,
-                            branch: item.submittedBy.cls.branch.label,
-                            section: item.submittedBy.cls.section,
-                            correctCount: item.correctCount,
-                            score: item.score,
-                            percentage: parseFloat(((item.score * 100) / item.quiz.maxScore)).toFixed(1),
-                            maxScore: item.quiz.maxScore,
-                            questionCount: item.quiz.questionCount,
-                            submittedAt: date.toUTCString().substring(0, date.toUTCString().length - 3),
-                        })
+
+                            this.submissionList.push({
+                                id: item.id,
+                                kecId: item.submittedBy.kecId,
+                                name: item.submittedBy.name,
+                                year: item.submittedBy.cls.year,
+                                branch: item.submittedBy.cls.branch.label,
+                                section: item.submittedBy.cls.section,
+                                correctCount: item.correctCount,
+                                score: item.score,
+                                percentage: parseFloat(((item.score * 100) / item.quiz.maxScore)).toFixed(1),
+                                maxScore: item.quiz.maxScore,
+                                questionCount: item.quiz.questionCount,
+                                submittedAt: date.toUTCString().substring(0, date.toUTCString().length - 3),
+                            })
+
                     });
+
+
+                    this.responseCount = response.data.count;
+                    this.count = (this.page - 1) * this.limit;
 
                     this.state = new StateContent();
                     this.isSubmission = true;
-                    debugLog(response)
 
                 } catch (e) {
                     errorLog(e);
@@ -198,7 +218,10 @@
                         this.state = new StateError({retryCallback: this.fetchResponseList});
 
                 }
-            }
+            },
+            onPageChange() {
+                this.fetchResponseList((this.page - 1) * this.limit);
+            },
         }
     }
 </script>

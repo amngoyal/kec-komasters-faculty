@@ -22,7 +22,7 @@
                 <template v-slot:default>
                     <thead>
                     <tr>
-                        <th class="text-left subtitle-2">S.no</th>
+                        <th class="text-center subtitle-2">S.no</th>
                         <th class="text-left subtitle-2">Title</th>
                         <th class="text-left subtitle-2">Topic</th>
                         <th class="text-center subtitle-2">Duration</th>
@@ -35,7 +35,7 @@
                     </thead>
                     <tbody>
                     <tr v-for="(item,index) in data" :key="item.quizId">
-                        <td>{{count+index+1}}</td>
+                        <td class="text-center">{{count+index+1}}</td>
                         <td><p class="primary--text underline-on-hover" v-on:click="onQuizNameClick(item.quizId)">
                             {{item.title}}</p></td>
                         <td>{{ item.topic }}</td>
@@ -67,15 +67,16 @@
             </v-simple-table>
         </div>
 
-        <div v-if="true" class="text-center fixed-bottom mb-4">
+        <div v-if="quizCount !== 0" class="text-center fixed-bottom mb-4">
             <v-pagination
                     dark
                     v-on:input="onPageChange()"
                     color="primary"
                     v-model="page"
-                    :length="4"
+                    :length="Math.ceil(quizCount/limit)"
             ></v-pagination>
         </div>
+
     </div>
 </template>
 
@@ -98,7 +99,9 @@
 
                 data: [],
 
-                limit: 15,
+                limit: 10,
+
+                quizCount: 0,
 
                 isEnabled: [],
 
@@ -146,8 +149,9 @@
                         }
                     });
 
+                    debugLog(response);
 
-                    response.data.forEach(item => {
+                    response.data.quizzes.forEach(item => {
                         this.data.push({
                             quizId: item.id,
                             title: item.title,
@@ -163,9 +167,9 @@
                         this.enableButtonLoading.push(false)
                     });
 
+                    this.quizCount = response.data.count;
                     this.count = (this.page - 1) * this.limit;
 
-                    debugLog(response.data);
                     this.state = new StateContent();
                     this.isQuiz = true;
 
@@ -178,7 +182,7 @@
 
             onPageChange() {
 
-                this.fetchQuizList((this.page - 1)*this.limit);
+                this.fetchQuizList((this.page - 1) * this.limit);
             },
         }
     }
@@ -190,5 +194,6 @@
         text-decoration: underline;
         cursor: pointer;
     }
+
 
 </style>

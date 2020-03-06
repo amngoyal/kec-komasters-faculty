@@ -12,7 +12,7 @@ let errorLog = function () {};
 
 if (isDevelopment) {
 
-    url = 'https://dev-api.komasters.tk/v1/';
+    url = 'https://stg-api.komasters.tk/v1/';
 
     debugLog = function debugLog(m) {
         console.log(m)
