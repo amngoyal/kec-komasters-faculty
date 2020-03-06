@@ -1,5 +1,5 @@
 <template>
-    <v-app>
+    <div>
 
         <v-app-bar flat>
             <v-toolbar-title>Your Uploaded Quiz</v-toolbar-title>
@@ -66,7 +66,7 @@
                 </template>
             </v-simple-table>
         </div>
-    </v-app>
+    </div>
 </template>
 
 <script>
