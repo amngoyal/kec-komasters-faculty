@@ -18,7 +18,7 @@
         <div v-if="this.isContent">
 
 
-            <v-simple-table fixed-header class="px-4">
+            <v-simple-table fixed-header class="px-4 mb-12">
                 <template v-slot:default>
                     <thead>
                     <tr>
@@ -35,7 +35,7 @@
                     </thead>
                     <tbody>
                     <tr v-for="(item,index) in data" :key="item.quizId">
-                        <td>{{index+1 }}</td>
+                        <td>{{count+index+1}}</td>
                         <td><p class="primary--text underline-on-hover" v-on:click="onQuizNameClick(item.quizId)">
                             {{item.title}}</p></td>
                         <td>{{ item.topic }}</td>
@@ -66,6 +66,16 @@
                 </template>
             </v-simple-table>
         </div>
+
+        <div v-if="true" class="text-center fixed-bottom mb-4">
+            <v-pagination
+                    dark
+                    v-on:input="onPageChange()"
+                    color="primary"
+                    v-model="page"
+                    :length="4"
+            ></v-pagination>
+        </div>
     </div>
 </template>
 
@@ -85,10 +95,17 @@
         data() {
             return {
                 state: new StateRest(),
+
                 data: [],
-                limit: 50,
-                offset: 0,
+
+                limit: 15,
+
                 isEnabled: [],
+
+                count: 1,
+
+                page: 1,
+
                 isQuiz: false,
                 switchValue: [],
                 enableButtonLoading: [],
@@ -101,7 +118,7 @@
             },
         },
         async mounted() {
-            await this.fetchQuizList();
+            await this.fetchQuizList(0);
         },
         methods: {
             onViewResponseButtonClick(id, title) {
@@ -112,7 +129,9 @@
             onQuizNameClick(id) {
                 router.push('/home/quiz/all/' + id);
             },
-            async fetchQuizList() {
+
+
+            async fetchQuizList(offset) {
 
                 this.data = [];
 
@@ -121,7 +140,7 @@
                     this.state = new StateLoading();
 
                     const token = await AccountManager.getAccessToken();
-                    let response = await instance.get(`/faculty/${AccountManager.user.id}/quiz?limit=${this.limit}&offset=${this.offset}`, {
+                    let response = await instance.get(`/faculty/${AccountManager.user.id}/quiz?limit=${this.limit}&offset=${offset}`, {
                         headers: {
                             authorization: token
                         }
@@ -144,16 +163,23 @@
                         this.enableButtonLoading.push(false)
                     });
 
+                    this.count = (this.page - 1) * this.limit;
+
                     debugLog(response.data);
                     this.state = new StateContent();
                     this.isQuiz = true;
 
                 } catch (e) {
                     errorLog(e);
-                    this.state = new StateError({retryCallback: this.fetchQuizList});
+                    this.state = new StateError({retryCallback: this.fetchQuizList, message: "No quiz found"});
                     this.isQuiz = false;
                 }
-            }
+            },
+
+            onPageChange() {
+
+                this.fetchQuizList((this.page - 1)*this.limit);
+            },
         }
     }
 </script>

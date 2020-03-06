@@ -190,7 +190,7 @@
                     if (e.response) {
                         if (e.response.status === 404) {
                             this.state = new StateError({
-                                message: "No submissions yet!!",
+                                message: "No submissions yet",
                                 retryCallback: this.fetchResponseList
                             });
                         }

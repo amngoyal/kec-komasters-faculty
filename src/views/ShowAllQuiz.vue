@@ -1,7 +1,7 @@
 <template>
 
     <main>
-        <router-view style="height: 100%;"></router-view>
+        <router-view style="height: 90%;"></router-view>
     </main>
 
 </template>
