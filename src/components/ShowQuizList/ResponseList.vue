@@ -14,7 +14,9 @@
 
 
                 <a id="download" class="mr-12">
-                    <v-btn outlined @click="this.downloadReport" color="primary">Export Excel File</v-btn>
+                    <v-btn outlined @click="this.downloadReport" :loading="exportBtnLoading" color="primary">Export
+                        Excel File
+                    </v-btn>
                 </a>
 
                 <v-btn color="primary" @click="fetchResponseList()" tile depressed>
@@ -108,6 +110,8 @@
                 page: 1,
                 responseCount: 0,
                 count: 1,
+                exportBtnLoading: false,
+                allSubmissionList: [],
             }
         },
         computed: {
@@ -115,7 +119,8 @@
                 return this.state instanceof StateContent
             },
             excelFileJsonArray() {
-                return this.submissionList.map(item => {
+
+                return this.allSubmissionList.map(item => {
                     return {
                         'Time': item.submittedAt,
                         'Kec Id': item.kecId,
@@ -142,21 +147,66 @@
                 })
             },
 
-            downloadReport() {
-                let res = json2xls(this.excelFileJsonArray);
+            async downloadReport() {
 
-                const buf = new ArrayBuffer(res.length);
-                const view = new Uint8Array(buf);
-                for (let i = 0; i !== res.length; ++i) view[i] = res.charCodeAt(i) & 0xFF;
-                const blob = new Blob([buf], {
-                    type: 'application/octet-stream'
-                });
-                const blobUrl = URL.createObjectURL(blob, {
-                    type: 'data:attachment/xlsx'
-                });
-                const a = document.getElementById('download');
-                a.download = this.$route.query.quiz_title + '.xlsx';
-                a.href = blobUrl;
+                try {
+
+                    this.exportBtnLoading = true;
+
+                    const token = await AccountManager.getAccessToken();
+                    let response = await instance.get(`/submission/quiz/${this.quiz_id}?limit=2000&offset=0`, {
+                        headers: {
+                            authorization: token
+                        }
+                    });
+
+                    this.allSubmissionList = [];
+
+                    response.data.submissions.forEach(item => {
+
+                        let date = new Date(item.submittedAt);
+
+
+                        this.allSubmissionList.push({
+                            id: item.id,
+                            kecId: item.submittedBy.kecId,
+                            name: item.submittedBy.name,
+                            year: item.submittedBy.cls.year,
+                            branch: item.submittedBy.cls.branch.label,
+                            section: item.submittedBy.cls.section,
+                            correctCount: item.correctCount,
+                            score: item.score,
+                            percentage: parseFloat(((item.score * 100) / item.quiz.maxScore)).toFixed(1),
+                            maxScore: item.quiz.maxScore,
+                            questionCount: item.quiz.questionCount,
+                            submittedAt: date.toUTCString().substring(0, date.toUTCString().length - 3),
+                        })
+
+                    });
+
+
+                    let res = json2xls(this.excelFileJsonArray);
+
+                    const buf = new ArrayBuffer(res.length);
+                    const view = new Uint8Array(buf);
+                    for (let i = 0; i !== res.length; ++i) view[i] = res.charCodeAt(i) & 0xFF;
+                    const blob = new Blob([buf], {
+                        type: 'application/octet-stream'
+                    });
+                    const blobUrl = URL.createObjectURL(blob, {
+                        type: 'data:attachment/xlsx'
+                    });
+                    const a = document.getElementById('download');
+                    a.download = this.$route.query.quiz_title + '.xlsx';
+                    a.href = blobUrl;
+
+
+                    this.exportBtnLoading = false;
+
+                } catch (e) {
+                    errorLog(e)
+                    this.exportBtnLoading = false;
+                }
             },
 
             async fetchResponseList(offset) {
@@ -181,20 +231,20 @@
                         let date = new Date(item.submittedAt);
 
 
-                            this.submissionList.push({
-                                id: item.id,
-                                kecId: item.submittedBy.kecId,
-                                name: item.submittedBy.name,
-                                year: item.submittedBy.cls.year,
-                                branch: item.submittedBy.cls.branch.label,
-                                section: item.submittedBy.cls.section,
-                                correctCount: item.correctCount,
-                                score: item.score,
-                                percentage: parseFloat(((item.score * 100) / item.quiz.maxScore)).toFixed(1),
-                                maxScore: item.quiz.maxScore,
-                                questionCount: item.quiz.questionCount,
-                                submittedAt: date.toUTCString().substring(0, date.toUTCString().length - 3),
-                            })
+                        this.submissionList.push({
+                            id: item.id,
+                            kecId: item.submittedBy.kecId,
+                            name: item.submittedBy.name,
+                            year: item.submittedBy.cls.year,
+                            branch: item.submittedBy.cls.branch.label,
+                            section: item.submittedBy.cls.section,
+                            correctCount: item.correctCount,
+                            score: item.score,
+                            percentage: parseFloat(((item.score * 100) / item.quiz.maxScore)).toFixed(1),
+                            maxScore: item.quiz.maxScore,
+                            questionCount: item.quiz.questionCount,
+                            submittedAt: date.toUTCString().substring(0, date.toUTCString().length - 3),
+                        })
 
                     });
 
