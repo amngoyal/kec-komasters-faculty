@@ -596,12 +596,17 @@
                         {section: "A", value: '2CSEA'},
                         {section: "B", value: '2CSEB'},
                         {section: "C", value: '2CSEC'},
-                        {section: "D", value: '2CSED'}
+                        {section: "D", value: '2CSED'},
+                        {section: "E", value: '2CSEE'},
+                        {section: "F", value: '2CSEF'},
+                        {section: "G", value: '2CSEG'},
+                        {section: "H", value: '2CSEH'},
+
                     ],
-                secondYearItSectionsArray: [{section: 'A', value: '2ITA'}],
-                secondYearMeSectionsArray: [{section: 'A', value: '2MEA'}],
-                secondYearEceSectionsArray: [{section: 'A', value: '2ECEA'}],
-                secondYearCivilSectionsArray: [{section: 'A', value: '2CIVILA'}],
+                secondYearItSectionsArray: [{section: 'A', value: '2ITA'}, {section: 'B', value: '2ITB'}],
+                secondYearMeSectionsArray: [{section: 'A', value: '2MEA'}, {section: 'B', value: '2MEB'}],
+                secondYearEceSectionsArray: [{section: 'A', value: '2ECEA'}, {section: 'B', value: '2ECEB'}],
+                secondYearCivilSectionsArray: [{section: 'A', value: '2CEA'}, {section: 'B', value: '2CEB'}],
                 secondAll: false,
                 secondCseAll: false,
                 secondItAll: false,
@@ -624,12 +629,16 @@
                         {section: "A", value: '3CSEA'},
                         {section: "B", value: '3CSEB'},
                         {section: "C", value: '3CSEC'},
-                        {section: "D", value: '3CSED'}
+                        {section: "D", value: '3CSED'},
+                        {section: "E", value: '3CSEE'},
+                        {section: "F", value: '3CSEF'},
+                        {section: "G", value: '3CSEG'},
+                        {section: "H", value: '3CSEH'},
                     ],
-                thirdYearItSectionsArray: [{section: 'A', value: '3ITA'}],
-                thirdYearMeSectionsArray: [{section: 'A', value: '3MEA'}],
-                thirdYearEceSectionsArray: [{section: 'A', value: '3ECEA'}],
-                thirdYearCivilSectionsArray: [{section: 'A', value: '3CIVILA'}],
+                thirdYearItSectionsArray: [{section: 'A', value: '3ITA'}, {section: 'B', value: '3ITB'}],
+                thirdYearMeSectionsArray: [{section: 'A', value: '3MEA'}, {section: 'B', value: '3MEB'}],
+                thirdYearEceSectionsArray: [{section: 'A', value: '3ECEA'}, {section: 'B', value: '3ECEB'}],
+                thirdYearCivilSectionsArray: [{section: 'A', value: '3CEA'}, {section: 'B', value: '3CEB'}],
                 thirdAll: false,
                 thirdCseAll: false,
                 thirdItAll: false,
@@ -652,12 +661,16 @@
                         {section: "A", value: '4CSEA'},
                         {section: "B", value: '4CSEB'},
                         {section: "C", value: '4CSEC'},
-                        {section: "D", value: '4CSED'}
+                        {section: "D", value: '4CSED'},
+                        {section: "E", value: '4CSEE'},
+                        {section: "F", value: '4CSEF'},
+                        {section: "G", value: '4CSEG'},
+                        {section: "H", value: '4CSEH'},
                     ],
-                fourthYearItSectionsArray: [{section: 'A', value: '4ITA'}],
-                fourthYearMeSectionsArray: [{section: 'A', value: '4MEA'}],
-                fourthYearEceSectionsArray: [{section: 'A', value: '4ECEA'}],
-                fourthYearCivilSectionsArray: [{section: 'A', value: '4CIVILA'}],
+                fourthYearItSectionsArray: [{section: 'A', value: '4ITA'},{section: 'B', value: '4ITB'}],
+                fourthYearMeSectionsArray: [{section: 'A', value: '4MEA'},{section: 'B', value: '4MEB'}],
+                fourthYearEceSectionsArray: [{section: 'A', value: '4ECEA'},{section: 'B', value: '4ECEB'}],
+                fourthYearCivilSectionsArray: [{section: 'A', value: '4CEA'},{section: 'B', value: '4CEB'}],
                 fourthAll: false,
                 fourthCseAll: false,
                 fourthItAll: false,
@@ -773,7 +786,7 @@
                 }
 
                 if (this.secondCseAll && !this.CSE2) {
-                    this.secondCse = ['2CSEA', '2CSEB', '2CSEC', '2CSED'];
+                    this.secondCse = ['2CSEA', '2CSEB', '2CSEC', '2CSED', '2CSEE', '2CSEF', '2CSEG', '2CSEH'];
                     this.CSE2 = true;
 
                 }
@@ -805,7 +818,7 @@
                 }
 
                 if (this.secondItAll && !this.IT2) {
-                    this.secondIt = ['2ITA'];
+                    this.secondIt = ['2ITA', '2ITB'];
                     this.IT2 = true;
                 }
 
@@ -836,7 +849,7 @@
                 }
 
                 if (this.secondMeAll && !this.ME2) {
-                    this.secondMe = ['2MEA'];
+                    this.secondMe = ['2MEA', '2MEB'];
                     this.ME2 = true;
                 }
 
@@ -867,7 +880,7 @@
                 }
 
                 if (this.secondEceAll && !this.ECE2) {
-                    this.secondEce = ['2ECEA'];
+                    this.secondEce = ['2ECEA', '2ECEB'];
                     this.ECE2 = true;
                 }
 
@@ -898,7 +911,7 @@
                 }
 
                 if (this.secondCivilAll && !this.CIVIL2) {
-                    this.secondCivil = ['2CIVILA'];
+                    this.secondCivil = ['2CEA', '2CEB'];
                     this.CIVIL2 = true;
                 }
 
@@ -960,7 +973,7 @@
                 }
 
                 if (this.thirdCseAll && !this.CSE3) {
-                    this.thirdCse = ['3CSEA', '3CSEB', '3CSEC', '3CSED'];
+                    this.thirdCse = ['3CSEA', '3CSEB', '3CSEC', '3CSED','3CSEE', '3CSEF', '3CSEG', '3CSEH'];
                     this.CSE3 = true;
                 }
 
@@ -991,7 +1004,7 @@
                 }
 
                 if (this.thirdItAll && !this.IT3) {
-                    this.thirdIt = ['3ITA'];
+                    this.thirdIt = ['3ITA', '3ITB'];
                     this.IT3 = true;
                 }
 
@@ -1022,7 +1035,7 @@
                 }
 
                 if (this.thirdMeAll && !this.ME3) {
-                    this.thirdMe = ['3MEA'];
+                    this.thirdMe = ['3MEA', '3MEB'];
                     this.ME3 = true;
                 }
 
@@ -1053,7 +1066,7 @@
                 }
 
                 if (this.thirdEceAll && !this.ECE3) {
-                    this.thirdEce = ['3ECEA'];
+                    this.thirdEce = ['3ECEA', '3ECEB'];
                     this.ECE3 = true;
                 }
 
@@ -1085,7 +1098,7 @@
                 }
 
                 if (this.thirdCivilAll && !this.CIVIL3) {
-                    this.thirdCivil = ['3CIVILA'];
+                    this.thirdCivil = ['3CEA', '3CEB'];
                     this.CIVIL3 = true;
                 }
 
@@ -1146,7 +1159,7 @@
                 }
 
                 if (this.fourthCseAll && !this.CSE4) {
-                    this.fourthCse = ['4CSEA', '4CSEB', '4CSEC', '4CSED'];
+                    this.fourthCse = ['4CSEA', '4CSEB', '4CSEC', '4CSED','4CSEE', '4CSEF', '4CSEG', '4CSEH'];
                     this.CSE4 = true;
                 }
 
@@ -1177,7 +1190,7 @@
                 }
 
                 if (this.fourthItAll && !this.IT4) {
-                    this.fourthIt = ['4ITA'];
+                    this.fourthIt = ['4ITA', '4ITB'];
                     this.IT4 = true;
                 }
 
@@ -1208,7 +1221,7 @@
                 }
 
                 if (this.fourthMeAll && !this.ME4) {
-                    this.fourthMe = ['4MEA'];
+                    this.fourthMe = ['4MEA', '4MEB'];
                     this.ME4 = true;
                 }
 
@@ -1239,7 +1252,7 @@
                 }
 
                 if (this.fourthEceAll && !this.ECE4) {
-                    this.fourthEce = ['4ECEA'];
+                    this.fourthEce = ['4ECEA', '4ECEB'];
                     this.ECE4 = true;
                 }
 
@@ -1270,7 +1283,7 @@
                 }
 
                 if (this.fourthCivilAll && !this.CIVIL4) {
-                    this.fourthCivil = ['4CIVILA'];
+                    this.fourthCivil = ['4CEA', '4CEB'];
                     this.CIVIL4 = true;
                 }
 
