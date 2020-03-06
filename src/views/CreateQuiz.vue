@@ -132,20 +132,15 @@
                                 <strong>Scopes:</strong>&ensp;{{quizScopes.value}}
                                 <hr>
 
-                                <v-checkbox
-                                        v-model="checkbox"
-                                        label="Quiz cannot be changed once submitted"
-                                ></v-checkbox>
 
                             </v-container>
 
                         </v-card>
 
-                        <v-btn color="primary" :disabled="!checkbox" :loading="loading" @click="submitQuiz()"> Submit
+                        <v-btn color="primary" @click="dialog = true"> Submit
                             Quiz
                         </v-btn>
 
-                        <v-btn text>Cancel</v-btn>
                     </v-stepper-content>
 
                 </v-stepper-items>
@@ -167,6 +162,28 @@
                     Close
                 </v-btn>
             </v-snackbar>
+
+            <!------------------ Dialog ------------------->
+            <v-dialog v-model="dialog" persistent max-width="290">
+
+                <v-card>
+                    <v-card-title class="headline">Warning!!</v-card-title>
+                    <v-card-text>Check if there is any mistake in the entered quiz questions.
+                        <br>
+                        <br> <b>Quiz can't be edit once uploaded.</b>
+                        You can only delete the quiz before publishing it.
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="primary" :loading="loading" @click="submitQuiz()"> Upload
+                            Quiz
+                        </v-btn>
+
+                        <v-btn text @click="dialog = false">Cancel</v-btn>
+                    </v-card-actions>
+                </v-card>
+
+            </v-dialog>
         </div>
 
     </div>
@@ -225,6 +242,7 @@
                 snackbar: false,
                 snackbarText: '',
 
+                dialog: false,
 
                 loading: false,
 
