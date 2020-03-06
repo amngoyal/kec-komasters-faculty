@@ -3,14 +3,28 @@
 //
 // comment console.log and remove message variable
 
-export const isDevelopment = true;
+const isDevelopment = false;
 
-export const url = 'https://stg-api.komasters.tk/v1/';
+let url;
+let debugLog = function () {};
 
-export function debugLog(m) {
-   if (isDevelopment) console.log(m)
+let errorLog = function () {};
+
+if (isDevelopment) {
+
+    url = 'https://dev-api.komasters.tk/v1/';
+
+    debugLog = function debugLog(m) {
+        console.log(m)
+    };
+
+    errorLog = function errorLog(m) {
+        console.error(m)
+    };
+
+} else {
+    url = 'https://api.komasters.tk/v1/';
+
 }
 
-export function errorLog(m) {
-    if (isDevelopment) console.error(m)
-}
+export {debugLog, errorLog, url, isDevelopment};
