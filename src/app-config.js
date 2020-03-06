@@ -5,7 +5,7 @@
 
 export const isDevelopment = true;
 
-export const url = 'https://dev-api.komasters.tk/v1/';
+export const url = 'https://stg-api.komasters.tk/v1/';
 
 export function debugLog(m) {
    if (isDevelopment) console.log(m)
