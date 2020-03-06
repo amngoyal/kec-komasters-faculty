@@ -90,7 +90,7 @@
         data() {
             return {
                 submissionList: [],
-                limit: 10,
+                limit: 200,
                 offset: 0,
                 state: new StateRest(),
                 isSubmission: false
