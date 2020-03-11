@@ -112,7 +112,6 @@
             window.addEventListener("resize", this.onWindowResize);
 
             window.addEventListener('session_expired', () => {
-                console.log("Session Expired event fired");
                 this.dialog = true
             })
 
