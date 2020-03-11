@@ -456,6 +456,7 @@
 
             reset() {
 
+                this.dialog = false;
                 this.$refs.scopeComponent.reset();
                 this.$refs.addQuestionsComponent.reset();
 

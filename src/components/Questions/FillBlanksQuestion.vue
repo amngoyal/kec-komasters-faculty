@@ -1,5 +1,5 @@
 <template>
-    <v-app>
+    <div>
         <v-container>
 
             <v-card tile :style="[cardStyle]">
@@ -158,7 +158,7 @@
                 </v-btn>
             </v-snackbar>
         </v-container>
-    </v-app>
+    </div>
 </template>
 
 <script>
