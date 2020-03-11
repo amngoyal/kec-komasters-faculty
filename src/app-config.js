@@ -3,7 +3,7 @@
 //
 // comment console.log and remove message variable
 
-const isDevelopment = false;
+const isDevelopment = true;
 
 let url;
 let debugLog = function () {
@@ -16,12 +16,12 @@ if (isDevelopment) {
 
     url = 'https://dev-api.komasters.tk/v1/';
 
-    debugLog = function debugLog() {
-       // console.log(m)
+    debugLog = function debugLog(m) {
+        console.log(m)
     };
 
-    errorLog = function errorLog() {
-      //  console.error(m)
+    errorLog = function errorLog(m) {
+        console.error(m)
     };
 
 } else {
