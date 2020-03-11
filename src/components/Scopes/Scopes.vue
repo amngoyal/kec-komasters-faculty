@@ -1465,8 +1465,6 @@
                 this.fourthEce = [];
                 this.fourthCivil = [];
 
-
-                console.log("Scopes cleared")
             }
         },
 
