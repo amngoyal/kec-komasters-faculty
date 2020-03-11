@@ -3,7 +3,7 @@
 //
 // comment console.log and remove message variable
 
-const isDevelopment = true;
+const isDevelopment = false;
 
 let url;
 let debugLog = function () {};
