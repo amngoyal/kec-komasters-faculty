@@ -108,6 +108,15 @@
             clientWidth: 0,
         }),
 
+        beforeRouteEnter(to,from,next){
+            if(AccountManager.isLoggedIn()){
+                next();
+            }
+            else {
+                next('/login');
+            }
+        },
+
         created() {
             window.addEventListener("resize", this.onWindowResize);
 
