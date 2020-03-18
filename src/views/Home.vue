@@ -10,7 +10,7 @@
                         {{userName}}
                     </v-list-item-title>
                     <v-list-item-subtitle>
-                        Assistant Professor
+                        {{designation.toString()}}
                     </v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
@@ -95,6 +95,7 @@
         data: () => ({
             nav: false,
             userName: 'user_name',
+            designation: 'designation',
             userId: '',
             dialog: false,
 
@@ -133,9 +134,10 @@
         mounted() {
 
             this.userData = AccountManager.getUserData();
-            if (this.userData.name != null) {
+            if (this.userData != null) {
                 this.userName = this.userData.name;
                 this.userId = this.userData.id;
+                this.designation = this.userData.designations.map(x => x.label);
             }
 
             this.onWindowResize();
