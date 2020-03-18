@@ -114,7 +114,7 @@
     </div>
 </template>
 <script>
-    import Quiz from '../components/Quiz'
+    import Quiz from './Quiz'
 
     export default {
 

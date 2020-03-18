@@ -89,10 +89,10 @@
     </v-layout>
 </template>
 <script>
-    import MultiSelect from './Questions/MultiSelectQuestion'
-    import MCQ from './Questions/MultipleChoiceQuestion'
-    import FillBlanks from './Questions/FillBlanksQuestion'
-    import TrueFalse from './Questions/TrueFalse'
+    import MultiSelect from '../Questions/MultiSelectQuestion'
+    import MCQ from '../Questions/MultipleChoiceQuestion'
+    import FillBlanks from '../Questions/FillBlanksQuestion'
+    import TrueFalse from '../Questions/TrueFalse'
 
     export default {
 

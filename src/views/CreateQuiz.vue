@@ -35,7 +35,8 @@
                                 <v-textarea
                                         rows="1"
                                         auto-grow
-                                        :hint="(quizTitle.length < 10)?'Title should be greater than 10 characters.' : ''"
+                                        :hint="(quizTitle.length < 10 || quizTitle.length > 100)?'Title should be greater than 10 characters and less than 100 characters.' : ''"
+                                        :error="(quizTitle.length < 10 && quizTitle !== '') || quizTitle.length > 100"
                                         @input="onQuizMetaDataChange"
                                         v-model="quizTitle"
                                         @keydown="$event.keyCode === 32 && quizTitle.length === 0 ? $event.preventDefault() : false"
@@ -48,7 +49,8 @@
                                 <v-textarea
                                         rows="1"
                                         auto-grow
-                                        :hint="(quizDescription.length < 10)?'Description should be greater than 10 characters.' : ''"
+                                        :hint="(quizDescription.length < 10 || quizDescription.length>=100)?'Description should be greater than 10 characters and less than 100 characters.' : ''"
+                                        :error="(quizDescription.length < 10 && quizDescription.length !== 0) || quizDescription.length>=100"
                                         @input="onQuizMetaDataChange"
                                         v-model="quizDescription"
                                         @keydown="$event.keyCode === 32 && quizDescription.length === 0 ? $event.preventDefault() : false"
@@ -61,7 +63,7 @@
                                 <v-text-field
                                         v-model="quizDuration"
                                         @input="onQuizMetaDataChange"
-                                        @keydown="$event.keyCode === 110 || $event.keyCode === 109 ||  $event.keyCode === 107 || $event.keyCode === 190 || $event.keyCode === 69  ? $event.preventDefault() : false"
+                                        @keydown="($event.keyCode >= 48 && $event.keyCode <= 57) || ($event.keyCode >= 96 && $event.keyCode <= 105) || $event.keyCode === 9 || $event.keyCode === 8 || $event.keyCode === 46 || $event.keyCode === 37 || $event.keyCode === 39 ? false : $event.preventDefault() "
                                         placeholder="Enter Time Limit of Quiz (in minutes)"
                                         type="number"
                                         background-color="white"
@@ -72,6 +74,7 @@
                                 <v-overflow-btn
                                         solo
                                         flat
+                                        editable
                                         @input="onQuizMetaDataChange"
                                         background-color="white"
                                         v-model="quizTopic"
@@ -190,7 +193,7 @@
 </template>
 
 <script>
-    import AddQuestions from "../components/AddQuestions";
+    import AddQuestions from "../components/CreateQuiz/AddQuestions";
     import Scopes from "../components/Scopes/Scopes";
     import instance, {getFrom} from "../axios";
     import AccountManager from "../models/AccountManager";
@@ -281,7 +284,7 @@
             },
 
             quizDetailsValidation() {
-                return this.quizTitle.length >= 10 && this.quizDescription.length >= 10 && this.quizDuration !== ''
+                return this.quizTitle.length >= 10 && (this.quizDescription.length >= 10 && this.quizDescription.length < 100) && this.quizDuration !== ''
                     && this.quizTopic !== '' && this.quizScopes.value.length !== 0;
             },
             quizValidation() {
