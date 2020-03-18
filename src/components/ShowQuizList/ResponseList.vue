@@ -8,6 +8,7 @@
                 </v-btn>
             </v-app-bar-nav-icon>
             <v-toolbar-title>{{this.$route.query.quiz_title}}</v-toolbar-title>
+
             <v-spacer/>
 
             <div v-if="isSubmission">
@@ -19,7 +20,7 @@
                     </v-btn>
                 </a>
 
-                <v-btn color="primary" @click="fetchResponseList()" tile depressed>
+                <v-btn color="primary" @click="fetchResponseList(fixedLimit, fixedOffset, true)" tile depressed>
                     <v-icon class="mr-1">mdi-refresh</v-icon>
                     Refresh
                 </v-btn>
@@ -51,8 +52,8 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="(item,index) in submissionList" :key="item.id">
-                        <td class="text-center">{{count + index + 1}}</td>
+                    <tr v-for="(item) in submissionList" :key="item.id">
+                        <td class="text-center">{{item.sno}}</td>
                         <td>{{item.kecId}}</td>
                         <td>{{item.name}}</td>
                         <td class="text-center">{{item.year}}</td>
@@ -104,7 +105,9 @@
         data() {
             return {
                 submissionList: [],
-                limit: 20,
+                fixedLimit: 30,
+                fixedOffset: 0,
+                limit: 30,
                 state: new StateRest(),
                 isSubmission: false,
                 page: 1,
@@ -136,8 +139,8 @@
                 });
             }
         },
-        async mounted() {
-            await this.fetchResponseList(0);
+        mounted() {
+            this.fetchResponseList(this.fixedLimit, this.fixedOffset);
         },
         methods: {
             onViewReportButtonClick(id, name, kecId) {
@@ -209,7 +212,19 @@
                 }
             },
 
-            async fetchResponseList(offset) {
+            async fetchResponseList(limit, offset, refresh) {
+
+                if (limit == null || offset == null) {
+                    limit = this.limit;
+                    offset = this.fixedOffset;
+                    this.count = 1;
+
+                }
+
+                if (refresh) {
+                    this.count = 1;
+                    this.page = 1;
+                }
 
                 this.submissionList = [];
 
@@ -218,7 +233,7 @@
                     this.state = new StateLoading();
 
                     const token = await AccountManager.getAccessToken();
-                    let response = await instance.get(`/submission/quiz/${this.quiz_id}?limit=${this.limit}&offset=${offset}`, {
+                    let response = await instance.get(`/submission/quiz/${this.quiz_id}?limit=${limit}&offset=${offset}`, {
                         headers: {
                             authorization: token
                         }
@@ -226,12 +241,12 @@
 
                     debugLog(response);
 
-                    response.data.submissions.forEach(item => {
+                    response.data.submissions.forEach((item, index) => {
 
                         let date = new Date(item.submittedAt);
 
-
                         this.submissionList.push({
+                            sno: (this.page - 1) * this.limit + index + 1,
                             id: item.id,
                             kecId: item.submittedBy.kecId,
                             name: item.submittedBy.name,
@@ -270,7 +285,7 @@
                 }
             },
             onPageChange() {
-                this.fetchResponseList((this.page - 1) * this.limit);
+                this.fetchResponseList(this.limit, (this.page - 1) * this.limit);
             },
         }
     }

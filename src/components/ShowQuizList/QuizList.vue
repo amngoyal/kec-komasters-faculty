@@ -6,7 +6,7 @@
 
             <v-spacer/>
 
-            <v-btn depressed tile color="primary" v-if="isQuiz" v-on:click="fetchQuizList">
+            <v-btn depressed tile color="primary" v-if="isQuiz" v-on:click="fetchQuizList(fixedLimit,fixedOffset,true)">
                 <v-icon class="mr-1">mdi-refresh</v-icon>
                 Refresh
             </v-btn>
@@ -35,7 +35,7 @@
                     </thead>
                     <tbody>
                     <tr v-for="(item,index) in data" :key="item.quizId">
-                        <td class="text-center">{{count+index+1}}</td>
+                        <td class="text-center">{{item.sno}}</td>
                         <td><p class="primary--text underline-on-hover" v-on:click="onQuizNameClick(item.quizId)">
                             {{item.title}}</p></td>
                         <td>{{ item.topic }}</td>
@@ -99,6 +99,8 @@
 
                 data: [],
 
+                fixedLimit: 10,
+                fixedOffset: 0,
                 limit: 10,
 
                 quizCount: 0,
@@ -120,8 +122,8 @@
                 return this.state instanceof StateContent
             },
         },
-        async mounted() {
-            await this.fetchQuizList(0);
+        mounted() {
+            this.fetchQuizList(this.fixedLimit, this.fixedOffset);
         },
         methods: {
             onViewResponseButtonClick(id, title) {
@@ -134,7 +136,18 @@
             },
 
 
-            async fetchQuizList(offset) {
+            async fetchQuizList(limit, offset, refresh) {
+
+                if (limit == null || offset == null) {
+                    limit = this.fixedLimit;
+                    offset = this.fixedOffset;
+                    this.count = 1;
+                }
+
+                if (refresh) {
+                    this.count = 1;
+                    this.page = 1;
+                }
 
                 this.data = [];
 
@@ -143,7 +156,7 @@
                     this.state = new StateLoading();
 
                     const token = await AccountManager.getAccessToken();
-                    let response = await instance.get(`/faculty/${AccountManager.user.id}/quiz?limit=${this.limit}&offset=${offset}`, {
+                    let response = await instance.get(`/faculty/${AccountManager.user.id}/quiz?limit=${limit}&offset=${offset}`, {
                         headers: {
                             authorization: token
                         }
@@ -151,8 +164,9 @@
 
                     debugLog(response);
 
-                    response.data.quizzes.forEach(item => {
+                    response.data.quizzes.forEach((item, index) => {
                         this.data.push({
+                            sno: (this.page - 1) * this.limit + index + 1,
                             quizId: item.id,
                             title: item.title,
                             maxScore: item.maxScore,
@@ -182,7 +196,7 @@
 
             onPageChange() {
 
-                this.fetchQuizList((this.page - 1) * this.limit);
+                this.fetchQuizList(this.limit, (this.page - 1) * this.limit);
             },
         }
     }
