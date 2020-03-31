@@ -50,10 +50,10 @@
                                         rows="1"
                                         auto-grow
                                         :hint="(quizDescription.length < 10 || quizDescription.length>=100)?'Description should be greater than 10 characters and less than 100 characters.' : ''"
-                                        :error="(quizDescription.length < 10 && quizDescription.length !== 0) || quizDescription.length>=100"
+                                        :error="(quizDescription.length < 10 && quizDescription !== '') || quizDescription.length>=100"
                                         @input="onQuizMetaDataChange"
                                         v-model="quizDescription"
-                                        @keydown="$event.keyCode === 32 && quizDescription.length === 0 ? $event.preventDefault() : false"
+                                        @keydown="$event.keyCode === 32 && quizDescription === '' ? $event.preventDefault() : false"
                                         placeholder="Enter Description of Quiz"
                                         background-color="white"
                                         outlined>
@@ -66,6 +66,8 @@
                                         @keydown="($event.keyCode >= 48 && $event.keyCode <= 57) || ($event.keyCode >= 96 && $event.keyCode <= 105) || $event.keyCode === 9 || $event.keyCode === 8 || $event.keyCode === 46 || $event.keyCode === 37 || $event.keyCode === 39 ? false : $event.preventDefault() "
                                         placeholder="Enter Time Limit of Quiz (in minutes)"
                                         type="number"
+                                        :hint="quizDuration < 3 ? 'Quiz duration should be greater than 3 minutes' : false"
+                                        :error="quizDuration < 3 && quizDuration !== ''"
                                         background-color="white"
                                         outlined>
 
@@ -284,7 +286,7 @@
             },
 
             quizDetailsValidation() {
-                return this.quizTitle.length >= 10 && (this.quizDescription.length >= 10 && this.quizDescription.length < 100) && this.quizDuration !== ''
+                return this.quizTitle.length >= 10 && (this.quizDescription.length >= 10 && this.quizDescription.length < 100) && this.quizDuration >= 3
                     && this.quizTopic !== '' && this.quizScopes.value.length !== 0;
             },
             quizValidation() {
