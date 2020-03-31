@@ -447,8 +447,24 @@
 
                         this.loading = false;
 
+                        const errorCode = error.response.status;
+
+                        switch (errorCode) {
+
+                            case 400:
+                                this.showSnackbar("Please check the quiz data and try again.");
+                                break;
+
+                            case 409:
+                                this.showSnackbar("Quiz uploaded successfully!! Check and publish it from all quiz section.");
+                                this.reset();
+                                break;
+
+                            default:
+                                this.showSnackbar("An error occurred in uploading quiz.")
+
+                        }
                         debugLog(this.quizPayload);
-                        this.showSnackbar("Error in uploading Quiz");
                         if (error.response) {
                             debugLog(error.response);
                         }
