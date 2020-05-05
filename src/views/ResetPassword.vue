@@ -54,7 +54,7 @@
         name: "ResetPassword",
         data() {
             return {
-                kecId: 'KECF4623',
+                kecId: '',
                 infoCard: true,
                 loading: false
             }
